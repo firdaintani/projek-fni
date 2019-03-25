@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css?family=Playfair+Display');
+
+.navbar-brand{
+    font-family: 'Playfair Display', serif;
+    font-size: 35px !important;
+    opacity: 1;
+}
+.navbar{
+    background-color: white !important;
+    position: fixed !important;
+    opacity: 0.9;
+    width:100%;
+    margin-top: -70px;
+    z-index: 99;
+    transform: translateZ(0);
+    /* margin-bottom: 30px; */
+    
+}
+
+.nav-item .nav-link {
+    opacity: 1;
+}

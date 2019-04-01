@@ -1,0 +1,36 @@
+.table > tbody > tr > td {
+    vertical-align: middle;
+    /* border-bottom: 2px black solid; */
+}
+
+.table > thead > td {
+    border-bottom: 2px black solid;
+    border-top: 2px black solid;
+}
+.table > tfoot > tr> td {
+    border-bottom: 2px black solid;
+    border-top: 2px black solid;
+}
+
+.edit-button {
+    position:absolute;
+    font-size: 15px;
+    margin-top:-40px;
+     cursor: pointer;
+     color: #606060;
+     margin-left:270px;
+}
+
+.save-button {
+    position:absolute;
+    font-size: 15px;
+    margin-top:-40px;
+     cursor: pointer;
+     color: #606060;
+     margin-left:180px;
+}
+
+
+.edit-button:hover, .save-button:hover{
+    color: black;
+}

@@ -6,12 +6,13 @@
     opacity: 1;
 }
 .navbar{
+
     background-color: white !important;
     position: fixed !important;
     opacity: 0.9;
     width:100%;
     margin-top: -70px;
-    z-index: 99;
+    /* z-index: ; */
     transform: translateZ(0);
     /* margin-bottom: 30px; */
     
@@ -19,4 +20,11 @@
 
 .nav-item .nav-link {
     opacity: 1;
+}
+
+.search-bar{
+   width: 90%;
+    border: none;
+    border-bottom: 1px #606060 solid;
+
 }

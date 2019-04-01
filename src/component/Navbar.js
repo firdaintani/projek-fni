@@ -2,23 +2,45 @@ import React from 'react'
 import '../support/css/navbar.css'
 // import SlideMenu from './slideMenu'
 import {Link} from 'react-router-dom'
+import {Collapse} from 'reactstrap'
 
 class Navbar extends React.Component{
+    constructor(props) {
+        super(props);
+        this.toggle = this.toggle.bind(this);
+        this.state = { collapse: false };
+      }
     
+    searchBtn=()=>{
+        
+        // alert(this.refs.search.className)
+        // this.refs.search.style.borderBottom='3px black solid'
+    }
+
+    toggle() {
+       this.setState(state=>({collapse:!state.collapse}))
+
+      }
+
     render (){
         return (
+            <div>
+           
             <div className='navbar-fixed'>
            
           
-            <nav className="navbar navbar-expand-md navbar-light">
+            <nav className="navbar navbar-expand-md navbar-light"  style={{overflow:'hidden'}}>
                
                 <div className="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
-                    {/* <ul className="navbar-nav mr-auto">
+                    <ul className="navbar-nav mr-auto">
                     <li className="nav-item active">
-                        <a className="nav-link" href="/"><i class="fas fa-bars"></i></a>
+                    {/* <i class="fas fa-bars bm-burger-button" style={{marginLeft:'80px'}}></i>        */}
+                       {/* <input className='search-bar' ref='search' type='text' ></input> */}
+                       <i class="fas fa-search" onClick={this.toggle} style={{marginLeft:'50px',cursor:'pointer'}}></i>
+                        
                     </li>
                    
-                    </ul> */}
+                    </ul>
                 </div>
                 <div className="mx-auto order-0">
                     <a className="navbar-brand mx-auto" href="/">ST-ART</a>
@@ -29,7 +51,7 @@ class Navbar extends React.Component{
                 <div className="navbar-collapse collapse w-100 order-3 dual-collapse2">
                     <ul className="navbar-nav ml-auto">
                     <li className="nav-item">
-                        <a className="nav-link" href="/"><i class="fas fa-shopping-cart"></i></a>
+                       <Link to='/cart'><a className="nav-link" href="/"><i class="fas fa-shopping-cart"></i></a></Link> 
                     </li>
                     <li className="nav-item">
                         {/* <a className="nav-link" href="/"><i class="fas fa-user"></i></a> */}
@@ -38,10 +60,78 @@ class Navbar extends React.Component{
                    
                     </ul>
                 </div>
+               
+
                 </nav>
                 </div>
-
-        )
+                <Collapse isOpen={this.state.collapse}>
+                <div style={{position:'relative',zIndex:100,paddingTop:'25px'}}>
+                <i class="fas fa-search" onClick={this.toggle} style={{marginLeft:'60px',cursor:'pointer'}}></i>
+                    <input type='text' className='search-bar' placeholder='Search your item here...'></input>
+                    
+               
+             </div>
+             </Collapse>
+                 </div>
+                 
+          //   <nav className="navbar navbar-light bg-light fixed-top navbar-expand-sm" role="navigation">
+          //   <div className="container">
+          //     <button type="button" className="navbar-toggler" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span className="sr-only">Toggle navigation</span> ☰
+          //     </button> <a className="navbar-brand" href="#">Brand</a>
+          //     <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          //       <ul className="nav navbar-nav">
+          //         <li className="active nav-item"><a href="#" className="nav-link">Link</a>
+          //         </li>
+          //         <li className="nav-item"><a href="#" className="nav-link">Link</a>
+          //         </li>
+          //         <li className="dropdown nav-item"> <a href="#" className="dropdown-toggle nav-link" data-toggle="dropdown">Dropdown <b className="caret" /></a>
+          //           <ul className="dropdown-menu">
+          //             <li className="dropdown-item"><a href="#">Action</a>
+          //             </li>
+          //           </ul>
+          //         </li>
+          //       </ul>
+          //       <ul className="nav navbar-nav ml-auto">
+          //         <li className="nav-item"><a href="#" className="nav-link">Link</a>
+          //         </li>
+          //         <li className="dropdown nav-item"> <a href="#" className="dropdown-toggle nav-link" data-toggle="dropdown">Dropdown <b className="caret" /></a>
+          //           <ul className="dropdown-menu">
+          //             <li className="dropdown-item"><a href="#">Action</a>
+          //             </li>
+          //             <li className="dropdown-item"><a href="#">Another action</a>
+          //             </li>
+          //             <li className="dropdown-item"><a href="#">Something else here</a>
+          //             </li>
+          //             <li className="divider dropdown-item" />
+          //             <li className="dropdown-item"><a href="#">Separated link</a>
+          //             </li>
+          //           </ul>
+          //         </li>
+          //       </ul>
+          //       <form className="d-flex" role="search">
+          //         <div className="input-group">
+          //           <input type="text" className="form-control" placeholder="Search" />
+          //           <div className="input-group-append">
+          //             <button type="reset" className="btn btn-secondary">
+          //               <span className="fa fa-remove">
+          //                 <span className="sr-only">Close</span>
+          //               </span>
+          //             </button>
+          //           </div>
+          //           <div className="input-group-append">
+          //             <button type="submit" className="btn btn-secondary">
+          //               <span className="fa fa-search">
+          //                 <span className="sr-only">Search</span>
+          //               </span>
+          //             </button>
+          //           </div>
+          //         </div>
+          //       </form>
+          //     </div>
+          //   </div>
+          // </nav>
+          
+            )
     }
 }
 

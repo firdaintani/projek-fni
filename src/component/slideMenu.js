@@ -2,7 +2,9 @@ import React from 'react';
 import { slide as Menu } from 'react-burger-menu';
 import {Link} from 'react-router-dom'
 // import {CustomIcon} from 'react-burger-menu'
- 
+// import icon-menu from '../support/icon/bars-solid.svg' 
+import { ReactComponent as Logo } from '../support/icon/bars-solid.svg';
+
 export default class SlideMenu extends React.Component {
  
     constructor (props) {

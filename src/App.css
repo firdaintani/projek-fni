@@ -62,11 +62,11 @@
 }
 
 .bm-burger-button {
-  position: fixed;
+  position: relative;
   width: 20px;
   height: 20px;
   left: 36px;
-  top: 30px;
+  top:30px;
   z-index: 100 !important;
  
   /* color: #4C4C4C !important; */
@@ -75,6 +75,7 @@
 .bm-burger-bars {
   background: #373a47;
   z-index: 100;
+  background-color: black
 }
 
 .bm-cross-button {

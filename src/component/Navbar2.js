@@ -11,6 +11,7 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem } from 'reactstrap';
+import SlideMenu from './slideMenu';
 
 export default class Example extends React.Component {
   constructor(props) {
@@ -28,8 +29,10 @@ export default class Example extends React.Component {
   }
   render() {
     return (
-      <div  style={{position:'fixed', width:'100%', overflow:'visible'}}>
-        <Navbar color="light" light expand="md" >
+      <div style={{ width:'100%', zIndex:101}}>
+
+        <Navbar color="light" light expand="md">
+          
           <NavbarBrand href="/">reactstrap</NavbarBrand>
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import Navbar from './component/Navbar2'
+import Navbar from './component/Navbar'
 import Home from './component/home/Header'
 // import Footer from './component/footer'
 import SlideMenu from './component/slideMenu'
@@ -16,15 +16,15 @@ class App extends Component {
   render() {
     return (
       <div>
-        {/* <div style={{position:'fixed'}}> */}
+        <div style={{position:'fixed', width:'100%', top:0, zIndex:100}}>
         <SlideMenu/>
-        <Navbar/>
-      
-       
-        {/* </div> */}
+          <Navbar/>
+        
+        </div>
 
         <ScrollToTop>
         {/* <SlideMenu/> */}
+       
         <Route path='/' component={Home} exact/>
         <Route path='/login' component={Login} exact/>
         <Route path='/register' component={Register} exact/>

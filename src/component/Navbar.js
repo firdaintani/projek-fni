@@ -18,6 +18,7 @@ class Navbar extends React.Component{
     }
 
     toggle() {
+      // this.refs.navbar.style.display='none'
        this.setState(state=>({collapse:!state.collapse}))
 
       }
@@ -29,7 +30,16 @@ class Navbar extends React.Component{
             <div className='navbar-fixed'>
            
           
-            <nav className="navbar navbar-expand-md navbar-light"  style={{overflow:'hidden'}}>
+            <Collapse isOpen={this.state.collapse}>
+                <div style={{position:'relative',zIndex:100, top:'7px',height:'60px'}}>
+                <i class="fas fa-search" onClick={this.toggle} style={{marginLeft:'60px',cursor:'pointer'}}></i>
+                    <input type='text' className='search-bar' placeholder='Search your item here...'></input>
+                    
+               
+             </div>
+             </Collapse>
+
+            <nav className="navbar navbar-expand-md navbar-light" ref='navbar' style={{overflow:'visible'}}>
                
                 <div className="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
                     <ul className="navbar-nav mr-auto">
@@ -60,18 +70,9 @@ class Navbar extends React.Component{
                    
                     </ul>
                 </div>
-               
-
                 </nav>
+                
                 </div>
-                <Collapse isOpen={this.state.collapse}>
-                <div style={{position:'relative',zIndex:100,paddingTop:'25px'}}>
-                <i class="fas fa-search" onClick={this.toggle} style={{marginLeft:'60px',cursor:'pointer'}}></i>
-                    <input type='text' className='search-bar' placeholder='Search your item here...'></input>
-                    
-               
-             </div>
-             </Collapse>
                  </div>
                  
           //   <nav className="navbar navbar-light bg-light fixed-top navbar-expand-sm" role="navigation">

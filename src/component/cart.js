@@ -56,6 +56,8 @@ export default class Cart extends React.Component{
 
     saveBtn=(val)=>{
         alert(val.name + 'disimpan')
+        // this.setState({})
+        // this.cancelBtn()
     }
 
     cancelBtn=()=>{

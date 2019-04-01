@@ -20,6 +20,14 @@
      color: #606060;
      margin-left:270px;
 }
+.edit-button {
+    position:absolute;
+    font-size: 15px;
+    margin-top:-40px;
+     cursor: pointer;
+     color: #606060;
+     margin-left:270px;
+}
 
 .save-button {
     position:absolute;

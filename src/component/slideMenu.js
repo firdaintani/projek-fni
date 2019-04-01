@@ -35,7 +35,7 @@ export default class SlideMenu extends React.Component {
 
   return (
       <div>
-    <Menu  isOpen={this.state.menuOpen}
+    <Menu  isOpen={this.state.menuOpen} 
     onStateChange={(state) => this.handleStateChange(state)}>
       <Link to='/' className='menu-item' onClick={() => this.closeMenu()} >Home</Link>
 

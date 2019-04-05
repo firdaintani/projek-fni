@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css?family=Raleway');
+@font-face {
+  font-family: 'Raleway', sans-serif;
+  src: url('https://fonts.googleapis.com/css?family=Raleway');
+}
+.navbar-brand{
+    font-family: 'Playfair Display', serif;
+    font-size: 35px !important;
+    opacity: 1;
+}
+.nav{
+    background-color: white !important;
+    position: fixed !important;
+    opacity: 0.9;
+    width:100%;
+	top: 0;
+    /* z-index: ; */
+    /* transform: translateZ(0); */
+}
+
+
+.nav-item{
+    color : #8C8C8C;
+    text-decoration: none
+}
+
+.nav-item:hover{
+    color: black;
+    text-decoration: none
+}
+
+
+
+.nav {
+	position: relative;
+	padding-top: 30px !important;
+	/* max-height: 270px; */
+}
+.nav form[role="search"] {
+	position: absolute;
+	top: 0;
+	right: 230px;
+	width: 100%;
+	/* padding: 0px;
+	margin: 0px; */
+	z-index: 0;
+	height: 100%;
+}
+
+.nav form i {
+	margin-top: 5px;
+}
+
+.nav form[role="search"] i,
+.nav form[role="search"] input {
+	padding: 20px 5px;
+	border-width: 0px;
+	box-shadow: none;
+	outline: none;
+}
+
+.nav form[role="search"] input {
+	padding: 36px 12px;
+	font-size: 14pt;
+	/* font-style: italic; */
+	color: rgb(160, 160, 160);
+	box-shadow: none;
+}
+.nav form[role="search"] .fa-times {
+	display: none;
+}
+
+@media (min-width: 768px) {
+	.nav {
+		padding-top: 0px !important;
+		padding-right: 38px !important;
+	}
+	.nav form[role="search"] {
+		width: 38px;
+	}
+	.nav form[role="search"] input {
+		font-size: 15pt;
+		opacity: 0;
+		display: none;  
+	}
+	.nav form[role="search"].active {
+		width: 75%;
+	}
+	.nav form[role="search"].active i,
+	.nav form[role="search"].active input {
+		display: table;
+		opacity: 1;
+	}
+}

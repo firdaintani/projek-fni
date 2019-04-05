@@ -4,6 +4,7 @@ import '../../support/css/header.css'
 import Slider from './SliderCat'
 import 'slick-carousel/slick/slick.css'; 
 import 'slick-carousel/slick/slick-theme.css';
+import {Link} from 'react-router-dom'
 
 class Header extends React.Component{
     // state={isLogin:false}
@@ -18,8 +19,8 @@ class Header extends React.Component{
                         <div>Your trusted art supplies</div>
 
                         <div>
-                            <input type='button' className='tombol' value='SHOP NOW' style={{marginTop:'10px'}}></input>
-                            </div>
+                            <Link to='/product/all'><input type='button' className='tombol' value='SHOP NOW' style={{marginTop:'10px'}}></input>
+                            </Link></div>
                     </div>
                     <div className='col-6'>
                         {/* <img src={gambar} style={{height:}} alt='header pict'/> */}

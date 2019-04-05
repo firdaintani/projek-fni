@@ -5,8 +5,9 @@
     font-size: 35px !important;
     opacity: 1;
 }
+
 .navbar{
-    
+    box-shadow: none !important;
     background-color: white !important;
     position: fixed !important;
     opacity: 0.9;

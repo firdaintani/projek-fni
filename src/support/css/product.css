@@ -1,0 +1,23 @@
+.text-link{
+    color: #333333;
+    font-size: 20px;
+}
+
+div > .text-link:hover{
+    text-decoration: none !important;
+    color: #292929;
+
+}
+
+.active{
+    color:lightgray
+}
+
+.outline-none:focus{
+    outline: none !important;
+}
+
+/* .title-text{
+    font-size: 24px;
+    color: #292929;
+} */

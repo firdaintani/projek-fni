@@ -12,8 +12,10 @@
   }
   .card{
       border: none !important;
-  }
+      box-shadow: none !important;
+    }
   .gambar-produk{
+
 
     width:120px;
     height:270px;

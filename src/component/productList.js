@@ -14,7 +14,6 @@ export default class ProductList extends React.Component{
         {name:"Tombow Dual Brush Pen Set 10 Tropical",img:'https://d1v72txp4rf8db.cloudfront.net/media/catalog/product/cache/b74395f3dea86789ca23abf7766ff8b9/t/o/tom_56189_1.jpg',price:370000,merk:'Tombow'},
         {name:"Tombow Dual Brush Pen Set 10 Muted",img:'https://d1v72txp4rf8db.cloudfront.net/media/catalog/product/cache/b74395f3dea86789ca23abf7766ff8b9/t/o/tom_56186_1.jpg',price:370000,merk:'Tombow'},
         {name:"Tombow Dual Brush Pen Set 10 Primary",img:'https://d1v72txp4rf8db.cloudfront.net/media/catalog/product/cache/b74395f3dea86789ca23abf7766ff8b9/t/o/tom_56167_1_2.jpg',price:370000,merk:'Tombow'}
-
     ]}
 
     fnRedirect=(name)=>{

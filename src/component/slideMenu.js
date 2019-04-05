@@ -3,7 +3,7 @@ import { slide as Menu } from 'react-burger-menu';
 import {Link} from 'react-router-dom'
 // import {CustomIcon} from 'react-burger-menu'
 // import icon-menu from '../support/icon/bars-solid.svg' 
-import { ReactComponent as Logo } from '../support/icon/bars-solid.svg';
+// import { ReactComponent as Logo } from '../support/icon/bars-solid.svg';
 
 export default class SlideMenu extends React.Component {
  
@@ -37,10 +37,13 @@ export default class SlideMenu extends React.Component {
       <div>
     <Menu  isOpen={this.state.menuOpen} 
     onStateChange={(state) => this.handleStateChange(state)}>
-      <Link to='/' className='menu-item' onClick={() => this.closeMenu()} >Home</Link>
+      <Link to='/' className='menu-item outline-none' onClick={() => this.closeMenu()} >Home</Link>
 
-        <Link className="menu-item" to='/product/all' onClick={() => this.closeMenu()}>
+        <Link className="menu-item outline-none" to='/product/all' onClick={() => this.closeMenu()}>
        Shop
+      </Link>
+      <Link className="menu-item outline-none" to='/profile' onClick={() => this.closeMenu()}>
+       Profile
       </Link>
 
       

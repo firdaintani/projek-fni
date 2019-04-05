@@ -1,26 +1,84 @@
 import React from 'react'
 import '../support/css/login.css'
-import {Link} from 'react-router-dom'
-export default class Login extends React.Component{
+import {Link, Redirect} from 'react-router-dom'
+import {connect} from 'react-redux'
+import Loader from 'react-loader-spinner'
+import {onLogin} from './../1. action'
+
+class Login extends React.Component{
+    state={verified:null, error: ''}
+
+    componentWillReceiveProps(newProps){
+        this.setState({verified:newProps.verified, error:newProps.error})
+    }
+    
+    onLogin=()=>{
+        var username = this.refs.username.value
+        var password = this.refs.password.value
+        // alert(username+' '+password)
+       
+        this.props.onLogin(username,password)
+        
+    }
+
+    renderErrorMessege = () => {
+        if(this.props.error !== ""){
+            return <div class="alert alert-dark mt-3" role="alert">
+                        {this.props.error}
+            </div>
+        }
+    }
+
+    renderBtnOrLoading=()=>{
+        if(this.props.loading === true){
+            return <Loader
+                    type="Audio"
+                    color="#000000"
+                    height="50"	
+                    width="50"
+                    />
+        }else{
+            return <input type="button" className="tombol mb-3" value='LOGIN' onClick={this.onLogin} style={{marginTop:'20px', width:'100%'}}></input>
+               
+        }
+      
+    }
+
+
     render(){
+        if(this.props.username !== ""){
+            return <Redirect to='/'/>
+        }
         return(
             <div className='container' style={{marginTop:'70px', paddingTop:'70px'}}>
+                {/* <center><h3 className='navbar-brand'>LOGIN</h3></center> */}
                <form style={{marginRight:'300px', marginLeft:'300px'}}>
-                <div className="form-group">
+                {/* <div className="form-group">
                     <label htmlFor="exampleInputEmail1">Email address</label><br></br>
                     <input type="email" className="form-border" aria-describedby="emailHelp" placeholder="Enter email" />
                     <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
+                </div> */}
+                <div className="form-group">
+                    <label htmlFor="Username">Username</label><br></br>
+                    <input type="text" className="form-border outline-none" ref='username' placeholder="Enter username" />
+                    {/* <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small> */}
                 </div>
                 <div className="form-group">
                     <label htmlFor="exampleInputPassword1">Password</label><br></br>
-                    <input type="password" className="form-border" placeholder="Password" />
+                    <input type="password" className="form-border outline-none" placeholder="Password" ref='password'/>
                 </div>
                 {/* <div className="form-check">
                     <input type="checkbox" className="form-check-input" id="exampleCheck1" />
                     <label className="form-check-label" htmlFor="exampleCheck1">Check me out</label>
                 </div> */}
-                <input type="button" className="tombol" value='LOGIN' style={{marginTop:'20px'}}></input> OR  &nbsp;
-                <input type="button" className="tombol" value='LOGIN WITH GOOGLE' style={{marginTop:'20px'}}></input><br></br>
+                
+                {this.renderBtnOrLoading()}
+              
+                <p style={{textAlign:"center"}}>OR</p>
+                    
+             
+                <input type="button" className="tombol" value='LOGIN WITH GOOGLE' style={{width:'100%'}}></input><br></br>
+                {this.renderErrorMessege()}
                 <Link to='/register'><small  className='form-text text-muted'  style={{marginTop:'10px'}}>Dont have an account?Click here</small></Link>
                 
                 </form>
@@ -30,3 +88,14 @@ export default class Login extends React.Component{
         )
     }
 }
+
+const mapStatetoProps=(state)=>{
+    return {
+        username : state.user.username,
+        loading : state.user.loading,
+        error : state.user.error,
+        verified : state.user.verified
+    }
+}
+
+export default connect(mapStatetoProps,{onLogin})(Login)

@@ -68,8 +68,12 @@
   left: 36px;
   top:30px;
   z-index: 100 !important;
+  
  
   /* color: #4C4C4C !important; */
+}
+.bm-burger-button:focus{
+  outline: none;
 }
 
 .bm-burger-bars {
@@ -104,3 +108,22 @@
 .bm-overlay {
   background: rgba(0, 0, 0, 0.3);
 }
+
+.no-outline:focus {
+  outline: none !important;
+}
+
+.font{
+  font-family: 'Raleway', sans-serif;
+}
+.outline-none:focus{
+  outline: none !important;
+}
+
+.btn {
+  box-shadow: none !important;
+}
+
+
+
+

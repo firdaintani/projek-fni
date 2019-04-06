@@ -16,9 +16,10 @@ import cookie from 'universal-cookie'
 import {keepLogin, cookieChecked} from './1. action'
 import {connect} from 'react-redux'
 import {withRouter} from 'react-router-dom'
-// import Loader from 'react-loader-spinner'
+import Loader from 'react-loader-spinner'
 // import ManageCategory from './component/admin/manageCategory'
 import ManageCategory from './component/admin/manageCat'
+import ManageBrand from './component/admin/manageBrand'
 var objCookie = new cookie()
 
 
@@ -36,7 +37,7 @@ class App extends Component {
    
   }
   render() {
-    // if(this.props.cookie){
+    if(this.props.cookie){
     return (
       <div>
         <div style={{position:'fixed', width:'100%', top:0, zIndex:100}}>
@@ -54,24 +55,26 @@ class App extends Component {
           <Route path='/product-detail' component={ProductDetail} exact/>
           <Route path='/cart' component={Cart} exact/>
           <Route path='/manage-category' component={ManageCategory} exact />
+          <Route path='/manage-brand' component={ManageBrand} exact />
+    
           <Route path='/profile' component={Profile} exact />
        
-        <Route path='/product/:category' component={Product}/>
+          <Route path='/product/:category' component={Product}/>  
         {/* <Footer/> */}
         </ScrollToTop>
      
       </div>
       );
-    // }
+    }
     
-    // return <div className='centervh'>
-    //           <Loader
-    //             type="Bars"
-    //             color="#00BFFF"
-    //             height="100"	
-    //             width="100"
-    //             />
-    //       </div>
+    return <div className='centervh'>
+              <Loader
+                type="Bars"
+                color="#00BFFF"
+                height="100"	
+                width="100"
+                />
+          </div>
   }
 }
 

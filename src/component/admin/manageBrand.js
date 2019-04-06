@@ -6,7 +6,7 @@ import {urlApi} from '../../support/urlApi'
 import swal from 'sweetalert'
 import { MDBBtn, MDBModal, MDBModalBody,MDBModalHeader, MDBModalFooter } from 'mdbreact';
 
-class ManageCat extends React.Component{
+class ManageBrand extends React.Component{
   
     
     state={ data : {
@@ -19,8 +19,8 @@ class ManageCat extends React.Component{
           width : 100
         },
         {
-          label : 'Category',
-          field : 'category_name',
+          label : 'Brand',
+          field : 'brand_name',
           sort : 'asc',
           width : 300
         }, 
@@ -45,19 +45,19 @@ class ManageCat extends React.Component{
   
     
   componentDidMount(){
-    this.getCategory()
+    this.getBrand()
   }
 
   
-  getCategory=()=>{
-    Axios.get(urlApi+'/category/all')
+  getBrand=()=>{
+    Axios.get(urlApi+'/brand/all')
     .then((res)=>{
       var newData = {...this.state.data}
       
       var dataBr = res.data.map((val)=>{
         return {
           id : val.id,
-          category_name : `${val.category_name}`,
+          brand_name : `${val.brand_name}`,
           edit : <input type='button' value='edit' className='btn btn-primary' onClick={()=>this.editBtn(val)}/>,
           delete : <input type='button' value='delete' className='btn btn-danger' onClick={()=>this.deleteBtn(val.id)}/>
         }
@@ -72,16 +72,16 @@ class ManageCat extends React.Component{
   saveEdit=()=>{
     
     
-    var category_name = this.refs.editCategory.value
+    var brand_name = this.refs.editBrand.value
     
    
-    if(category_name){
-      Axios.put(urlApi+'/category/update/'+this.state.editItem.id, {category_name})
+    if(brand_name){
+      Axios.put(urlApi+'/brand/update/'+this.state.editItem.id, {brand_name})
       .then((res)=>{
         if(res.data==='success')
         {
-          swal("Success!","Product has been updated", "success");
-          this.getCategory()
+          swal("Success!","Brand has been updated", "success");
+          this.getBrand()
           this.cancelBtn()
         }
         else{
@@ -114,7 +114,7 @@ class ManageCat extends React.Component{
     })
     .then((willDelete) => {
       if (willDelete) {
-        Axios.delete(urlApi+'/category/delete/'+id)
+        Axios.delete(urlApi+'/brand/delete/'+id)
         .then((res)=>{
           if(typeof(res.data)==='string'){
             swal({
@@ -122,7 +122,7 @@ class ManageCat extends React.Component{
               icon: "warning",
             })  
           }else{
-            this.getCategory()
+            this.getBrand()
             swal("Data has been deleted!", {
               icon: "success",
             });
@@ -135,16 +135,16 @@ class ManageCat extends React.Component{
     });
   }
 
-  addCategory=()=>{
-    var category_name = this.refs.inputCategory.value
-    if(category_name===''){
+  addBrand=()=>{
+    var brand_name = this.refs.inputBrand.value
+    if(brand_name===''){
       swal({
         text: "Must not empty!",
         icon: "warning",
       })
     }else{
       // alert(category)
-      Axios.post(urlApi+'/category/add', {category_name})
+      Axios.post(urlApi+'/brand/add', {brand_name})
       .then((res)=>{
         if(typeof(res.data)==='string'){
           swal({
@@ -153,13 +153,13 @@ class ManageCat extends React.Component{
           })  
         }
         else{
-          swal("Success!","Product has been added", "success");
+          swal("Success!","Brand has been added", "success");
           var newData = {...this.state.data}
       
           var dataBr = res.data.map((val)=>{
             return {
               id : val.id,
-              category_name : `${val.category_name}`,
+              brand_name : `${val.brand_name}`,
               edit : <input type='button' value='edit' className='btn btn-primary' onClick={()=>this.editBtn(val)}/>,
               delete : <input type='button' value='delete' className='btn btn-danger' onClick={()=>this.deleteBtn(val.id)}/>
             }
@@ -176,13 +176,13 @@ class ManageCat extends React.Component{
   return (
       <div className='container' style={{marginTop:'100px'}}>
       {/* {this.state.data.rows.id} */}
-      <h3>Manage Category</h3>
+      <h3>Manage Brand</h3>
           <div className='row'>
             <div className='col-md-5'>
-              <input type='text' placeholder='enter category' ref='inputCategory' className='form-border outline-none'></input>
+              <input type='text' placeholder='enter brand name' ref='inputBrand' className='form-border outline-none'></input>
             </div>
             <div className='col-md-4'>
-              <input type='button' className='tombol outline-none' value='ADD' onClick={this.addCategory}></input>
+              <input type='button' className='tombol outline-none' value='ADD' onClick={this.addBrand}></input>
             </div>
           
           </div>
@@ -200,9 +200,9 @@ class ManageCat extends React.Component{
       } */}
         { this.state.isEdit?    
       <MDBModal isOpen={this.state.isEdit} toggle={this.cancelBtn}>
-      <MDBModalHeader toggle={this.cancelBtn}>Edit Category {this.state.editItem.category_name}</MDBModalHeader>
+      <MDBModalHeader toggle={this.cancelBtn}>Edit Brand {this.state.editItem.brand_name}</MDBModalHeader>
         <MDBModalBody>
-          <input type='text' placeholder={this.state.editItem.category_name} style={{width:'100%'}} ref='editCategory'/>
+          <input type='text' placeholder={this.state.editItem.brand_name} style={{width:'100%'}} ref='editBrand'/>
           {/* <input type='button' className='btn btn-primary' onClick={this.saveEdit} value='Save' />
           <input type='button' className='btn btn-danger' onClick={this.cancelBtn} value='Cancel' /> */}
           
@@ -223,4 +223,4 @@ class ManageCat extends React.Component{
 
  
 }
-export default ManageCat;
+export default ManageBrand;

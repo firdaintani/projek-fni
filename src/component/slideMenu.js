@@ -1,18 +1,18 @@
 import React from 'react';
 import { slide as Menu } from 'react-burger-menu';
 import {Link} from 'react-router-dom'
-// import {CustomIcon} from 'react-burger-menu'
-// import icon-menu from '../support/icon/bars-solid.svg' 
-// import { ReactComponent as Logo } from '../support/icon/bars-solid.svg';
+import {connect} from 'react-redux'
 
-export default class SlideMenu extends React.Component {
- 
-    constructor (props) {
-        super(props)
-        this.state = {
-          menuOpen: false
+class SlideMenu extends React.Component {
+    
+       state = {
+          menuOpen: false,role:''
         }
-      }
+
+        componentWillReceiveProps(newProps){
+            alert(newProps.role)
+            this.setState({role:newProps.role})
+        }
     
       // This keeps your state in sync with the opening/closing of the menu
       // via the default means, e.g. clicking the X, pressing the ESC key etc.
@@ -33,23 +33,41 @@ export default class SlideMenu extends React.Component {
       }
     render(){
 
-  return (
-      <div>
-    <Menu  isOpen={this.state.menuOpen} 
-    onStateChange={(state) => this.handleStateChange(state)}>
-      <Link to='/' className='menu-item outline-none' onClick={() => this.closeMenu()} >Home</Link>
+    return (
+        <div>
+      <Menu  isOpen={this.state.menuOpen} 
+      onStateChange={(state) => this.handleStateChange(state)}>
+        <Link to='/' className='menu-item outline-none' onClick={() => this.closeMenu()} >Home</Link>
 
-        <Link className="menu-item outline-none" to='/product/all' onClick={() => this.closeMenu()}>
-       Shop
-      </Link>
-      <Link className="menu-item outline-none" to='/profile' onClick={() => this.closeMenu()}>
-       Profile
-      </Link>
+          <Link className="menu-item outline-none" to='/product/all' onClick={() => this.closeMenu()}>
+        Shop
+        </Link>
+        <Link className="menu-item outline-none" to='/profile' onClick={() => this.closeMenu()}>
+        Profile
+        </Link>
+        {
+          this.state.role==='admin' ? 
+          <Link className="menu-item outline-none" to='/manage-product' onClick={() => this.closeMenu()}>
+        Manage Product Category
+        </Link> : null
+        }
 
-      
-    </Menu>
-    {/* <CustomIcon onClick={() => this.toggleMenu()} /> */}
-    </div>
-  );
-};
+        {this.state.role}
+        {/* {this.state.username} */}
+        
+      </Menu>
+      {/* <CustomIcon onClick={() => this.toggleMenu()} /> */}
+      </div>
+    );
+  };
 }
+
+
+const mapStateToProps=(state)=>{
+  return {
+    username : state.user.username,
+    role : state.user.role
+  }
+}
+
+export default connect(mapStateToProps)(SlideMenu)

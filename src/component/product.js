@@ -4,13 +4,19 @@ import ProductList from './productList'
 import {Dropdown, DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap'
 import queryString from 'query-string';
 import '../support/css/product.css';
-// import SideBar from 'react-fixed-sidebar';
+import '../support/css/productList.css'
 
-export default class Product extends React.Component{
+import {withRouter} from 'react-router-dom'
+
+import Currency from 'react-currency-formatter';
+import Axios from 'axios';
+import { urlApi } from '../support/urlApi';
+import swal from 'sweetalert';
+
+class Product extends React.Component{
     constructor(props) {
         super(props);
     
-        this.toggle = this.toggle.bind(this);
         this.state = {
           dropdownOpen: false,
           category:[{id:1,link:'all',title:'All'},{id:2,link:'brush-pen',title:'Brush Pen'},
@@ -18,33 +24,22 @@ export default class Product extends React.Component{
           {id:4,link:'watercolor-paper',title:'Watercolor Paper'},
           {id:5,link:'watercolor',title:'Watercolor'},
           {id:6,link:'brush-paint',title:'Brush Paint'}],
-          cat: '', id: 'category1'
+          cat: '', id: 'category1',
+          product:[
+            ]
         };
       }
-      toggle() {
-        this.setState(prevState => ({
-          dropdownOpen: !prevState.dropdownOpen
-        }));
-      }
     
-    // state={category:[{link:'all',title:'All'},{link:'brush-pen',title:'Brush Pen'},
-    // {link:'drawing-pen',title:'Drawing Pen'},
-    // {link:'watercolor-paper',title:'Watercolor Paper'},
-    // {link:'watercolor',title:'Watercolor'},
-    // {link:'brush-paint',title:'Brush Paint'}]}
+
 
     changeActive=(id)=>{
-        // var titles= title
-        // alert(this.refs.watercolor.className)
-        // alert(id)
-        // this.refs.id.className+='active'
-        // var d = this.state.id
+       
         this.textInput.className+='active'
     }
 
     renderCategory=()=>{
         var data = this.state.category.map((val,index)=>{
-            // var reflink = 'category'+val.id
+          
             return (
                 <Link to={val.link} className='text-link font ' ><div ref={(div) => {this.reflink = div}} >{val.title}</div></Link>
 
@@ -55,13 +50,33 @@ export default class Product extends React.Component{
 
     componentDidMount(){
         this.getCat()
+        this.getProductList()
     }
+
+    getProductList=()=>{
+        Axios.get(urlApi+'/product/product-list')
+        .then((res)=>{
+            if(res.data.error){
+                swal("Error", res.data.msg,"error")
+
+            }else{
+                this.setState({product : res.data})
+            }
+        })
+        .catch((err)=>console.log(err))
+    }
+
     getCat=()=>{
         var cat = this.props.match.params.category
         this.setState({cat})
     }
 
+    toProdDetail=(id)=>{
+
+        this.props.history.push('/product-detail/'+id);
+    }
     
+
     getProps=()=>{
         var cat = this.props.match.params.category
         let url = this.props.location.search;
@@ -82,6 +97,48 @@ export default class Product extends React.Component{
            <ProductList category={cat}/>
        )
     }
+
+    renderProdukJsx = () => {
+        var jsx = this.state.product.map((val) => {
+            return (
+                <div className="card col-md-3 mr-5 mt-3 border-card" style={{width: '18rem'}} onClick={()=>this.toProdDetail(val.id)}>
+                {/* <p style={{textAlign:'center',marginTop:'20px'}} className='border-brand'>{val.brand_name}<i class="fas fa-cart-plus icon-add-cart" onClick={()=>alert('add to cart'+ val.id)}></i></p> */}
+                <p style={{textAlign:'center',marginTop:'20px'}} className='border-brand'>{val.brand_name}</p>
+                
+                    <img title={val.name} className="card-img-top gambar-list" src={urlApi+'/'+val.product_image} alt="Card" />
+                    {   
+                        val.discount > 0 ?
+                        <div className='discount-triangle'>
+                        <div className='discount'>{val.discount}%</div>
+                        </div>
+                        : null
+                    }
+
+                    <div className="card-body">
+                    <h4 className="card-text" style={{height:'30px',fontSize:'17px',textAlign:'center'}}>{val.name}</h4>
+                  <div style={{textAlign:'center'}}>
+                    {/* {
+                        val.discount > 0 ?
+                        <p className="card-text" style={{textDecoration:'line-through',color:'red',display:'inline'}}><Currency quantity={val.price} currency="IDR"/>
+                        </p>
+                        : null
+                    } */}
+
+                    <p style={{fontWeight:'500', marginTop:'18px'}}><Currency quantity={val.price - (val.price*(val.discount/100))} currency="IDR" /></p>
+                    </div>
+                    {/* <p style={{textAlign:'center', paddingTop:'10px',fontWeight:'500'}}>
+                    <Currency quantity={val.price} currency="IDR"/>
+                    </p> */}
+                    {/* <Link to={'/product-detail/' + val.id}><input type='button' className='tombol' value='Add To Cart' /></Link> */}
+                    </div>
+                </div>
+            )
+        })
+
+        return jsx
+    }
+
+
     render(){
         return(
             <div className='row' style={{marginTop:'70px', paddingTop:'10px',display: "flex", alignItems: "flex-start" }}>
@@ -97,8 +154,10 @@ export default class Product extends React.Component{
                            
                         </div>
                     </div>
-               
-                    {this.getProps()}
+                    <div className='row justify-content-center'>
+                    {this.renderProdukJsx()}
+                </div>
+                    {/* {this.getProps()} */}
                     </div>
                 </div>
                 <div className='col-3' style={{height:'100%',borderLeft:'2px solid black', position:"fixed", right:0}}>
@@ -184,3 +243,5 @@ export default class Product extends React.Component{
         )
     }
 }
+
+export default withRouter(Product)

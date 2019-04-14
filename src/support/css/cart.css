@@ -12,32 +12,48 @@
     border-top: 2px black solid;
 }
 
-.edit-button {
-    position:absolute;
+.edit-button{
+    position:relative !important;
     font-size: 15px;
-    margin-top:-40px;
+    text-align: end;
      cursor: pointer;
      color: #606060;
-     margin-left:270px;
-}
-.edit-button {
-    position:absolute;
-    font-size: 15px;
-    margin-top:-40px;
-     cursor: pointer;
-     color: #606060;
-     margin-left:270px;
 }
 
-.save-button {
-    position:absolute;
+/* .save-button {
+    position:relative;
     font-size: 15px;
     margin-top:-40px;
+    text-align: end;
      cursor: pointer;
      color: #606060;
      margin-left:180px;
+} */
+
+.cancel-button, .save-button{
+    position: relative;
+    /* float: right; */
+    cursor: pointer;
+    /* display: flex; */
+   
+
 }
 
+.save-button{
+     /* right: 50px; */
+     left: 270px;
+     /* margin-left: 300px; */
+
+    }
+
+.cancel-button{
+    float: right;
+    
+}
+
+.save-button{
+    margin-right: 50px;
+}
 
 .edit-button:hover, .save-button:hover{
     color: black;

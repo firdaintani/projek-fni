@@ -42,6 +42,7 @@ class Cart extends React.Component{
     }
     
     editBtn=(id, qty)=>{
+       
         this.setState({selectedId: id, qty:qty})
     }
 
@@ -57,16 +58,17 @@ class Cart extends React.Component{
           .then((willDelete) => {
      
             if (willDelete) {
-                Axios.delete(urlApi+'/cart/delete/'+id)  
+                Axios.delete(urlApi+'/cart/delete/'+id+'?username='+this.props.username)  
                 .then((res)=>{
                     if(res.data.error){
                         swal("Error", res.data.msg, "error")
                     }else{
-                        this.getDataCart()
+                        this.setState({productCart: res.data})
+                        this.props.countCart(this.props.username)
+
                         swal(`Poof! Product has been deleted!`, {
                             icon: "success",
                           });
-                          this.props.countCart(this.props.username)
                          
                                     
                     }
@@ -105,18 +107,20 @@ class Cart extends React.Component{
 
     renderCart =()=>{
         var data = this.state.productCart.map((val)=>{
-            if(this.state.selectedId===val.id){
-                return (
-                    <tr>
-                    <td>
-                        <div className='row mb-auto mt-auto d-flex align-items-center'>
-                            <div className='col-4' >
-                                <img src={urlApi+'/'+val.product_image} alt='product' style={{width:'150px', height:'150px', display:'inline'}}/>
-                            </div>
-                            <div className='col-7' >
-                                <p style={{fontStyle:'bold', fontSize:'20px'}}>{val.name}</p>
-                            
-                            <div className='row'>
+          
+            return (
+                <tr>
+                <td>
+                    <div className='row mb-auto mt-auto d-flex align-items-center'>
+                        <div className='col-4' >
+                            <img src={urlApi+'/'+val.product_image} alt='product' style={{width:'150px', height:'150px', display:'inline'}}/>
+                        </div>
+                        <div className='col-7' >
+                            <p style={{fontStyle:'bold', fontSize:'20px'}}>{val.name}</p>
+
+                            {
+                                this.state.selectedId===val.id ? 
+                                <div className='row'>
                                 <div className='col-3'>
                                     <i class="fas fa-minus" onClick={this.kurang} style={{cursor:'pointer'}}></i>
                                 </div>
@@ -128,40 +132,29 @@ class Cart extends React.Component{
                                     <i class="fas fa-plus" onClick={this.tambah} style={{cursor:'pointer', marginRight:'10px'}}></i>
                                     x <Currency quantity={val.price-(val.price*(val.discount/100))} currency="IDR"/>
                                 </div>
-                            </div>
-                            </div>
-                        </div>
-                    </td>
-                    <td >
-                        <p>
-                            <span className='save-button' onClick={()=>this.saveBtn(val.id)}>Save</span><span className='cancel-button' onClick={this.cancelBtn}>Cancel</span>
-                            </p>
-                    <p style={{float:"right"}} ><Currency quantity={val.quantity*(val.price-(val.price*(val.discount/100)))} currency="IDR"/></p>
-                    </td>
-                </tr>
-    
-                )
-            }
-
-            return (
-                <tr>
-                <td>
-                    <div className='row mb-auto mt-auto d-flex align-items-center'>
-                        <div className='col-4' >
-                            <img src={urlApi+'/'+val.product_image} alt='product' style={{width:'150px', height:'150px', display:'inline'}}/>
-                        </div>
-                        <div className='col-7' >
-                            <p style={{fontStyle:'bold', fontSize:'20px'}}>{val.name}</p>
+                                </div>
+                                :  <p>{val.quantity} x <span> <Currency quantity={val.price-(val.price*(val.discount/100))} currency="IDR"/></span> </p>
                         
-                            <p>{val.quantity} x <span> <Currency quantity={val.price-(val.price*(val.discount/100))} currency="IDR"/></span> </p>
-                        
+                            }                        
+                           
                         </div>
                     </div>
                 </td>
-                <td >
-                <p className='edit-button' onClick={()=>this.editBtn(val.id, val.quantity)}>Edit</p>
-                <p style={{float:"right"}} ><Currency quantity={val.quantity*(val.price-(val.price*(val.discount/100)))} currency="IDR"/><i class="fas fa-times" style={{paddingLeft:'20px', cursor:'pointer'}} onClick={()=>this.deleteBtn(val.id)}></i></p>
-                </td>
+                {
+                    this.state.selectedId===val.id ?
+                    <td >
+                        <p>
+                        <span className='save-button' onClick={()=>this.saveBtn(val.id)}>Save</span><span className='cancel-button' onClick={this.cancelBtn}>Cancel</span>
+                        </p>
+                        <p style={{float:"right"}} ><Currency quantity={val.quantity*(val.price-(val.price*(val.discount/100)))} currency="IDR"/></p>
+                    </td>
+                            
+                    : <td >
+                    <p className='edit-button' onClick={()=>this.editBtn(val.id, val.quantity)}>Edit</p>
+                    <p style={{float:"right"}} ><Currency quantity={val.quantity*(val.price-(val.price*(val.discount/100)))} currency="IDR"/><i class="fas fa-times" style={{paddingLeft:'20px', cursor:'pointer'}} onClick={()=>this.deleteBtn(val.id)}></i></p>
+                    </td>
+    
+                }
             </tr>
             )
         })
@@ -181,8 +174,18 @@ class Cart extends React.Component{
         return(
             <div className='container' style={{marginTop:'70px',paddingTop:'40px'}}>
             <center>
-               <table className='table' style={{width:'900px'}}>
-                    <thead>
+                   { this.props.cart===0 ?
+                    <table className='table' style={{width:'900px'}}>
+                <thead>
+                    <td style={{fontSize:'24px'}}>CART IS EMPTY</td>
+                       
+                    <td><Link to='/product/all'><input type='button' className='tombol' value='CONTINUE SHOPPING' style={{float:'right'}}></input></Link></td>
+               </thead>
+               </table>
+                    :
+                   <table className='table' style={{width:'900px'}}>
+               
+                     <thead>
                         <td style={{fontSize:'24px'}}>CART</td>
                        
                         <td><Link to='/product/all'><input type='button' className='tombol' value='CONTINUE SHOPPING' style={{float:'right'}}></input></Link></td>
@@ -212,7 +215,10 @@ class Cart extends React.Component{
                             </td>
                         </tr>
                     </tfoot>
-               </table>
+                    </table>
+
+               }
+               
                </center>
             </div>
         )
@@ -222,7 +228,8 @@ class Cart extends React.Component{
 
 const mapStateToProps=(state)=>{
     return {
-        username : state.user.username
+        username : state.user.username,
+        cart : state.user.cart
     }
 }
 export default connect(mapStateToProps,{countCart})(Cart)

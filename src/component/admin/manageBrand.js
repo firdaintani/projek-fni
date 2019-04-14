@@ -9,12 +9,12 @@ import { MDBBtn, MDBModal, MDBModalBody,MDBModalHeader, MDBModalFooter } from 'm
 class ManageBrand extends React.Component{
   
     
-    state={ data : {
+    state={dataSmtr:[], data : {
       columns: [
        
         {
-          label : 'ID',
-          field:'id',
+          label : 'No',
+          field:'no',
           sort : 'asc',
           width : 100
         },
@@ -48,44 +48,53 @@ class ManageBrand extends React.Component{
     this.getBrand()
   }
 
+  mapData=(data)=>{
+    var newData = {...this.state.data}
+    var dataBr = data.map((val, index)=>{
+      return {
+        no : index+1,
+        brand_name : `${val.brand_name}`,
+        edit : <input type='button' value='edit' className='btn btn-primary' onClick={()=>this.editBtn(val)}/>,
+        delete : <input type='button' value='delete' className='btn btn-danger' onClick={()=>this.deleteBtn(val.id)}/>
+      }
+    })
+    newData.rows=dataBr
+    this.setState({data:newData})
+
+  }
   
   getBrand=()=>{
     Axios.get(urlApi+'/brand/all')
     .then((res)=>{
-      var newData = {...this.state.data}
       
-      var dataBr = res.data.map((val)=>{
-        return {
-          id : val.id,
-          brand_name : `${val.brand_name}`,
-          edit : <input type='button' value='edit' className='btn btn-primary' onClick={()=>this.editBtn(val)}/>,
-          delete : <input type='button' value='delete' className='btn btn-danger' onClick={()=>this.deleteBtn(val.id)}/>
-        }
-      })
-      newData.rows=dataBr
-      
-      this.setState({data:newData})
+      if(res.data.error){
+        swal('Error',res.data.msg, 'error')
+      }else{
+        this.mapData(res.data)
+      }
     })
     .catch((err)=>console.log(err))
+
   }
 
   saveEdit=()=>{
-    
-    
+        
     var brand_name = this.refs.editBrand.value
     
-   
     if(brand_name){
       Axios.put(urlApi+'/brand/update/'+this.state.editItem.id, {brand_name})
       .then((res)=>{
-        if(res.data==='success')
+        if(res.data.error)
         {
-          swal("Success!","Brand has been updated", "success");
-          this.getBrand()
-          this.cancelBtn()
+          swal("Failed",res.data.msg, "error")
         }
         else{
-          swal("Failed",res.data, "error")
+
+          swal("Success!","Brand has been updated", "success");
+          // this.getBrand()
+          this.mapData(res.data)
+          this.cancelBtn()
+
         }
       })
       .catch((err)=>console.log(err))
@@ -96,8 +105,9 @@ class ManageBrand extends React.Component{
   }
 
   editBtn=(val)=>{
-    // alert(val.category_name)
+   
     this.setState({isEdit:true,editItem:val})
+ 
   }
 
   cancelBtn=()=>{
@@ -116,16 +126,18 @@ class ManageBrand extends React.Component{
       if (willDelete) {
         Axios.delete(urlApi+'/brand/delete/'+id)
         .then((res)=>{
-          if(typeof(res.data)==='string'){
+          if(res.data.error){
             swal({
-              text: res.data,
+              text: res.data.msg,
               icon: "warning",
             })  
           }else{
-            this.getBrand()
+            // this.getBrand()
+            this.mapData(res.data)
             swal("Data has been deleted!", {
               icon: "success",
             });
+            
     
           }
         })
@@ -146,26 +158,15 @@ class ManageBrand extends React.Component{
       // alert(category)
       Axios.post(urlApi+'/brand/add', {brand_name})
       .then((res)=>{
-        if(typeof(res.data)==='string'){
+        if(res.data.error){
           swal({
-            text: res.data,
+            text: res.data.msg,
             icon: "warning",
           })  
         }
         else{
           swal("Success!","Brand has been added", "success");
-          var newData = {...this.state.data}
-      
-          var dataBr = res.data.map((val)=>{
-            return {
-              id : val.id,
-              brand_name : `${val.brand_name}`,
-              edit : <input type='button' value='edit' className='btn btn-primary' onClick={()=>this.editBtn(val)}/>,
-              delete : <input type='button' value='delete' className='btn btn-danger' onClick={()=>this.deleteBtn(val.id)}/>
-            }
-          })
-          newData.rows=dataBr
-          this.setState({data:newData})
+         this.mapData(res.data)
       }
       })
     }

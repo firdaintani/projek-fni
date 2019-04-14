@@ -6,6 +6,7 @@ import {Link} from 'react-router-dom'
 import {connect} from 'react-redux'
 import {onLogout} from './../1. action'
 import swal from 'sweetalert'
+import {withRouter} from 'react-router-dom'
 
 class Navbar extends React.Component{
     constructor(props) {
@@ -40,6 +41,7 @@ class Navbar extends React.Component{
               swal("You logout", {
                 icon: "success",
               });
+              this.props.history.push('/');
             }
           });
          
@@ -73,14 +75,17 @@ class Navbar extends React.Component{
                     <ul className="navbar-nav ml-auto">
                     
                     <li className="nav-item">
-                       <Link to='/cart'><a className="nav-link" href="/"><i class="fas fa-shopping-cart"></i></a></Link> 
+                       <Link to='/cart'><a className="nav-link" href="/"><i class="fas fa-shopping-cart"><sup><span class="badge badge-danger">{this.props.cart !== 0 ? this.props.cart : null}</span></sup></i></a></Link> 
                     </li>
                     <li className="nav-item">
                         {/* <a className="nav-link" href="/"><i class="fas fa-user"></i></a> */}
                            { this.props.username==='' ?
-                        <Link to='/login'><input className='tombol font' type='button' value='LOGIN'/></Link>
+                           <span>
+                           <Link to='/login'><input className='tombol font' type='button' value='LOGIN'/></Link> &nbsp;
+                        <Link to='/register'><input className='tombol-black font' type='button' value='REGISTER'/></Link>
+                        </span>
                         : 
-                        <Link to='/'><input className='tombol font' type='button' value='LOGOUT' onClick={this.logoutBtn}/></Link>
+                        <input className='tombol font' type='button' value='LOGOUT' onClick={this.logoutBtn}/>
                         }
                     </li>
                    
@@ -154,8 +159,9 @@ class Navbar extends React.Component{
 
 const mapStateToProps=(state)=>{
     return {
-      username : state.user.username
+      username : state.user.username,
+      cart : state.user.cart
     }
   }
   
-  export default connect(mapStateToProps, {onLogout})(Navbar)
+  export default withRouter(connect(mapStateToProps, {onLogout})(Navbar))

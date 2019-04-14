@@ -10,10 +10,10 @@ export const onLogin=(username,password)=>{
     dispatch({
         type: 'LOADING',
     })
-    Axios.get(urlApi + '/user/login?username='+username+'&password='+password)
+    Axios.get(urlApi + '/login?username='+username+'&password='+password)
     .then((res)=>{
-         if(typeof(res.data)==='string')
-         alert(res.data)
+         if(res.data.error)
+         swal("Error",res.data.msg,"error")
          else{
              if(res.data.length>0){
                 
@@ -26,7 +26,7 @@ export const onLogin=(username,password)=>{
                     
                 dispatch({
                     type:'LOGIN_SUCCESS',
-                    payload : res.data
+                    payload : res.data[0]
                 })
                 objCookie.set('username', username, {path : '/'})
             }
@@ -51,7 +51,7 @@ export const keepLogin=(username)=>{
             if(res.data.length > 0){
                 dispatch({
                     type : 'LOGIN_SUCCESS',
-                    payload : res.data
+                    payload : res.data[0]
                 })
             }
         })
@@ -73,12 +73,13 @@ export const onRegister=(objData)=>{
             type:'LOADING'
         })
         
-        Axios.post(urlApi+'/user/register',objData)
+        Axios.post(urlApi+'/register',objData)
         .then((res)=>{
-            if(typeof(res.data)==='string'){
+            if(res.data.error){
             // alert(res.data)
             dispatch({
-                type:'USERNAME_NOT_AVAILABLE'
+                type:'USERNAME_NOT_AVAILABLE',
+                payload:res.data.msg
 
             })
         }
@@ -91,7 +92,7 @@ export const onRegister=(objData)=>{
                 // objCookie.set('username', res.data.username, {path : '/'})
                 swal({
                     title: "Success!",
-                    text: "Register success!",
+                    text: "Register success! Please check your email for your verification",
                     icon: "success",
                     
                   });
@@ -103,5 +104,24 @@ export const onRegister=(objData)=>{
 export const cookieChecked = () => {
     return {
         type : 'COOKIE_CHECKED'
+    }
+}
+
+export const countCart=(username)=>{
+    return (dispatch)=>{
+    
+    Axios.get(urlApi+'/cart/count?username='+username)
+    .then((res)=>{
+        if(res.data.error){
+            swal("Error", res.data.msg, "error")
+        }else{
+            dispatch({
+                type: 'CART_COUNT',
+                payload : res.data[0].total_cart
+            })
+        }
+    })
+    .catch((err)=>console.log(err))
+
     }
 }

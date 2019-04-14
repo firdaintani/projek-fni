@@ -1,0 +1,5 @@
+.link-text:hover{
+    text-decoration: underline !important;
+    color: blue;
+    cursor: pointer !important;
+}

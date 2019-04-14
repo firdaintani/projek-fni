@@ -1,12 +1,12 @@
-/* .img-detail{
+.product-image-detail{
     width:450px;
     height:450px;
     padding: 15px;
      object-fit:scale-down;
      
      cursor: pointer;
-} */
-.zoomed-image {
+}
+/* .zoomed-image {
     background-size: cover;
     cursor: pointer;
- }
+ } */

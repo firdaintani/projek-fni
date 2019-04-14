@@ -1,0 +1,20 @@
+.icon-menu{
+    position: relative;
+    z-index: 101;
+    margin-left: 30px;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+.icon-menu:hover{
+    color: grey
+}
+
+.menu-item{
+    font-size: 18px;
+    color: #212529;
+}
+
+.menu-item:hover{
+    color: grey;
+}

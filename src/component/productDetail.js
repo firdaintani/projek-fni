@@ -1,10 +1,41 @@
 import React from 'react'
 import '../support/css/productDetail.css'
-import ContentZoom from 'react-content-zoom';
+// import ContentZoom from 'react-content-zoom';
 import Currency from 'react-currency-formatter'
+import Axios from 'axios'
+import {urlApi} from '../support/urlApi'
+import swal from 'sweetalert'
+import {connect} from 'react-redux'
+import {countCart} from '../1. action'
+import {withRouter} from 'react-router-dom'
 
-export default class productDetail extends React.Component{
-    state={qty:1, product:{id:1, name: 'Tombow Fudenosuke Soft Tip', price: 300000, img :'https://d1v72txp4rf8db.cloudfront.net/media/catalog/product/cache/b74395f3dea86789ca23abf7766ff8b9/t/o/tom_56189_1.jpg', desc:'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse volutpat congue tincidunt. Proin vestibulum nibh a eros consectetur, eu commodo nisi consectetur. Nam erat neque, posuere a congue et, venenatis sit amet turpis. Nunc interdum pellentesque elementum. Nulla at convallis leo. Integer feugiat et eros at aliquam. Etiam vehicula lectus.'}}
+class ProductDetail extends React.Component{
+    state={qty:1, product:{}}
+
+    componentDidMount(){
+        this.getDetail()
+    }
+
+    getDetail=()=>{
+
+        var idUrl = this.props.match.params.id
+        alert(idUrl)
+        Axios.get(urlApi+'/product/product-detail/'+idUrl)
+        .then((res)=>{
+            if(res.data.error){
+                swal("Error", res.data.msg, "error")
+            }else{
+                var newdata = {...res.data[0]}
+                
+                // newdata.product_image = `${urlApi}/${res.data[0].product_image}`
+                newdata.product_image = urlApi+'/'+res.data[0].product_image
+                delete res.data[0].product_image
+                
+                this.setState({product :newdata})
+                
+            }
+        })
+    }
 
     kurang=()=>{
         if(this.state.qty>1){
@@ -18,30 +49,58 @@ export default class productDetail extends React.Component{
     }
 
     addToCart=(id)=>{
-        alert(id+' add to cart')
+        // alert(id+' add to cart')
+        // alert(this.state.qty)
+        if(this.props.username){
+            var newData = {username : this.props.username, product_id : id, quantity : this.state.qty }
+            Axios.post(urlApi+'/cart/add', newData)
+            .then((res)=>{
+                if(res.data.error){
+                    swal("Error", res.data.msg, "error")
+                }else{
+                    this.props.countCart(this.props.username)
+                    swal("Success", "Product has been added to cart", "success")
+                    
+                }
+            })
+    
+    
+        }
+        else{
+            swal("Error","You need to login!", "error")
+            .then((willLogin) => {
+                if (willLogin) {
+               
+                  this.props.history.push('/login');
+                }
+              });
+
+            
+        }
     }
 
     
     
     render(){
-        var {name, price, id, desc,img} = this.state.product
+        var {name, price, id, description, product_image} = this.state.product
         return(
             <div className='container' style={{marginTop:'70px', padding:'30px'}}>
                 <div className='row'>
                     <div className='col-5'>
-                        {/* <img src='https://d1v72txp4rf8db.cloudfront.net/media/catalog/product/cache/b74395f3dea86789ca23abf7766ff8b9/t/o/tom_56189_1.jpg' alt='produk ' className='img-detail mx-auto'></img> */}
-                        <ContentZoom zoomPercent={160}
-                        largeImageUrl={img}
-                        imageUrl={img}
+                    {/* <p  onClick={()=>alert(typeof(this.state.image))}>asa</p> */}
+                        <img src={product_image} alt='produk ' className='product-image-detail mx-auto'></img>
+                        {/* <ContentZoom zoomPercent={160}
+                        largeImageUrl={this.state.image}
+                        imageUrl={this.state.image}
                         contentHeight={450}
                         contentWidth={450} />
-                        
+                         */}
                     </div>
                     <div className='col-7 mt-auto mb-auto' >
                     
                         <h3 className='navbar-brand'>{name}</h3>
                         <p style={{fontStyle:'italic'}}><Currency quantity={price} currency="IDR"/></p>
-                        <p>{desc}</p>
+                        <p>{description}</p>
                        <div className='row'>
                        <div className='col-5'>
                             <div className='row'>
@@ -61,7 +120,8 @@ export default class productDetail extends React.Component{
                             </div>
                        </div>
                         </div>
-                        <hr style={{width:'180px', marginLeft:0, borderTop:'2px black solid'}}></hr>     
+                        <hr style={{width:'180px', marginLeft:0, borderTop:'2px black solid'}}></hr>
+                             
                         <input type='button' className='tombol' value='ADD TO CART' onClick={()=>this.addToCart(id)}></input>   
                     </div>
                 </div>
@@ -69,3 +129,11 @@ export default class productDetail extends React.Component{
         )
     }
 }
+
+const mapStateToProps=(state)=>{
+    return {
+        username : state.user.username
+    }
+}
+
+export default withRouter(connect(mapStateToProps,{countCart})(ProductDetail))

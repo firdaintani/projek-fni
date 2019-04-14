@@ -13,8 +13,8 @@ class ManageCat extends React.Component{
       columns: [
        
         {
-          label : 'ID',
-          field:'id',
+          label : 'No',
+          field:'no',
           sort : 'asc',
           width : 100
         },
@@ -49,43 +49,52 @@ class ManageCat extends React.Component{
   }
 
   
+  mapData=(data)=>{
+    var newData = {...this.state.data}
+   
+    var dataBr = data.map((val, index)=>{
+      return {
+        no : index+1,
+        category_name : `${val.category_name}`,
+        edit : <input type='button' value='edit' className='btn btn-primary' onClick={()=>this.editBtn(val)}/>,
+        delete : <input type='button' value='delete' className='btn btn-danger' onClick={()=>this.deleteBtn(val.id)}/>
+      }
+    })
+    newData.rows=dataBr
+    
+    this.setState({data:newData})
+
+  }
+  
   getCategory=()=>{
     Axios.get(urlApi+'/category/all')
     .then((res)=>{
-      var newData = {...this.state.data}
-      
-      var dataBr = res.data.map((val)=>{
-        return {
-          id : val.id,
-          category_name : `${val.category_name}`,
-          edit : <input type='button' value='edit' className='btn btn-primary' onClick={()=>this.editBtn(val)}/>,
-          delete : <input type='button' value='delete' className='btn btn-danger' onClick={()=>this.deleteBtn(val.id)}/>
-        }
-      })
-      newData.rows=dataBr
-      
-      this.setState({data:newData})
+      if(res.data.error){
+        swal("Error",res.data.msg,'error')
+      }else{
+        this.mapData(res.data)
+      }
     })
     .catch((err)=>console.log(err))
   }
 
   saveEdit=()=>{
-    
-    
     var category_name = this.refs.editCategory.value
-    
-   
+
     if(category_name){
       Axios.put(urlApi+'/category/update/'+this.state.editItem.id, {category_name})
       .then((res)=>{
-        if(res.data==='success')
+        if(res.data.error)
         {
-          swal("Success!","Product has been updated", "success");
-          this.getCategory()
-          this.cancelBtn()
+          swal("Failed",res.data.msg, "error")
+
         }
         else{
-          swal("Failed",res.data, "error")
+          swal("Success!","Product has been updated", "success");
+          // this.getCategory()
+          this.mapData(res.data)
+          this.cancelBtn()
+
         }
       })
       .catch((err)=>console.log(err))
@@ -116,13 +125,13 @@ class ManageCat extends React.Component{
       if (willDelete) {
         Axios.delete(urlApi+'/category/delete/'+id)
         .then((res)=>{
-          if(typeof(res.data)==='string'){
+          if(res.data.error){
             swal({
-              text: res.data,
+              text: res.data.msg,
               icon: "warning",
             })  
           }else{
-            this.getCategory()
+            this.mapData(res.data)
             swal("Data has been deleted!", {
               icon: "success",
             });
@@ -146,26 +155,15 @@ class ManageCat extends React.Component{
       // alert(category)
       Axios.post(urlApi+'/category/add', {category_name})
       .then((res)=>{
-        if(typeof(res.data)==='string'){
+        if(res.data.error){
           swal({
-            text: res.data,
+            text: res.data.msg,
             icon: "warning",
           })  
         }
         else{
           swal("Success!","Product has been added", "success");
-          var newData = {...this.state.data}
-      
-          var dataBr = res.data.map((val)=>{
-            return {
-              id : val.id,
-              category_name : `${val.category_name}`,
-              edit : <input type='button' value='edit' className='btn btn-primary' onClick={()=>this.editBtn(val)}/>,
-              delete : <input type='button' value='delete' className='btn btn-danger' onClick={()=>this.deleteBtn(val.id)}/>
-            }
-          })
-          newData.rows=dataBr
-          this.setState({data:newData})
+          this.mapData(res.data)
       }
       })
     }
@@ -203,8 +201,7 @@ class ManageCat extends React.Component{
       <MDBModalHeader toggle={this.cancelBtn}>Edit Category {this.state.editItem.category_name}</MDBModalHeader>
         <MDBModalBody>
           <input type='text' placeholder={this.state.editItem.category_name} style={{width:'100%'}} ref='editCategory'/>
-          {/* <input type='button' className='btn btn-primary' onClick={this.saveEdit} value='Save' />
-          <input type='button' className='btn btn-danger' onClick={this.cancelBtn} value='Cancel' /> */}
+      
           
         </MDBModalBody>
         <MDBModalFooter>

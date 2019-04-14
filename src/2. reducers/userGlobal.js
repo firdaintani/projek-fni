@@ -1,4 +1,4 @@
-const INITIAL_STATE={username : "",role : "",error : "",loading:false,  cookie : false, verified:0}
+const INITIAL_STATE={username : "",role : "",error : "",loading:false,  cookie : false, verified:0, cart : 0}
 
 export default (state=INITIAL_STATE, action)=>{
     if(action.type==='LOGIN_SUCCESS'){
@@ -10,13 +10,15 @@ export default (state=INITIAL_STATE, action)=>{
     }else if(action.type==='RESET_USER'){
         return {...INITIAL_STATE,cookie:true}
     }else if(action.type==='USERNAME_NOT_AVAILABLE'){
-        return {...INITIAL_STATE, error:'username not available. Try another username',cookie:true}
+        return {...INITIAL_STATE, error:action.payload,cookie:true}
     }else if (action.type=== 'COOKIE_CHECKED'){
         return {...state,cookie:true}
     }else if(action.type==='REGISTER_SUCCESS'){
         return {...INITIAL_STATE,cookie:true}
     }else if(action.type==='NOT_VERIFIED'){
         return {...INITIAL_STATE, error:'Please verify your email first', cookie:true}
+    }else if(action.type==='CART_COUNT'){
+        return {...state, cart : action.payload}
     }
     else{
     return state

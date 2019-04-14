@@ -11,6 +11,7 @@ class ManageCategory extends React.Component{
     this.getCategory()
   }
 
+
   getCategory=()=>{
     Axios.get(urlApi+'/category/all')
     .then((res)=>{

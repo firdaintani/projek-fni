@@ -2,6 +2,7 @@
     border:none;
     border-bottom: 1px solid black;
     width: 100%;
-
 }
-
+.form-border:focus{
+    outline:none !important;
+}

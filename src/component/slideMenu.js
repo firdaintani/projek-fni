@@ -2,17 +2,26 @@ import React from 'react';
 import { slide as Menu } from 'react-burger-menu';
 import {Link} from 'react-router-dom'
 import {connect} from 'react-redux'
+import { MDBBtn, MDBCollapse } from "mdbreact";
 
 class SlideMenu extends React.Component {
     
        state = {
-          menuOpen: false,role:''
+          menuOpen: false,collapseID: ""
         }
 
-        componentWillReceiveProps(newProps){
-            alert(newProps.role)
-            this.setState({role:newProps.role})
+    
+        toggleCollapse = collapseID => () => {
+          if(this.state.collapseID){
+          this.refs.collapsemd.className='display-collapse'
+        }else{
+          this.refs.collapsemd.className=''
+                }
+          this.setState(prevState => ({
+            collapseID: prevState.collapseID !== collapseID ? collapseID : ""
+          }));
         }
+        
     
       // This keeps your state in sync with the opening/closing of the menu
       // via the default means, e.g. clicking the X, pressing the ESC key etc.
@@ -31,6 +40,10 @@ class SlideMenu extends React.Component {
       toggleMenu () {
         this.setState({menuOpen: !this.state.menuOpen})
       }
+
+      // toggleCollapse () {
+      //   this.setState({menuCollapse: !this.state.menuCollapse})
+      // }
     render(){
 
     return (
@@ -46,13 +59,26 @@ class SlideMenu extends React.Component {
         Profile
         </Link>
         {
-          this.state.role==='admin' ? 
+          this.props.role==='admin' ? 
           <Link className="menu-item outline-none" to='/manage-product' onClick={() => this.closeMenu()}>
         Manage Product Category
         </Link> : null
         }
-
-        {this.state.role}
+        
+        <MDBBtn color="info" onClick={this.toggleCollapse("basicCollapse")} style={{ marginBottom: "1rem" }}>
+          Toggle2
+        </MDBBtn>
+      
+        <MDBCollapse id="basicCollapse"  isOpen={this.state.collapseID} ref='collapsemd' >
+          <p>
+              {this.state.collapseID}
+            Anim pariatur cliche reprehenderit, enim eiusmod high life
+            accusamus terry richardson ad squid. Nihil anim keffiyeh
+            helvetica, craft beer labore wes anderson cred nesciunt sapiente
+            ea proident.
+          </p>
+        </MDBCollapse>
+        
         {/* {this.state.username} */}
         
       </Menu>
@@ -65,7 +91,6 @@ class SlideMenu extends React.Component {
 
 const mapStateToProps=(state)=>{
   return {
-    username : state.user.username,
     role : state.user.role
   }
 }

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import './App.css';
 import Navbar from './component/Navbar'
 import Home from './component/home/Header'
-// import SlideMenu from './component/slideMenu3'
 import { Route } from 'react-router-dom';
 import Product from './component/product'
 import Login from './component/Login'
@@ -22,6 +21,11 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import Loader from 'react-loader-spinner'
 import SlideMenu2 from './component/slidemenu2.jsx'
+import Transaction from './component/transaction'
+import TransactionDetail from './component/transactionDetail'
+import ManageTransaction from './component/admin/manageTransaction2'
+import FinishedTransaction from './component/admin/finishedTransaction'
+import TabTransaction from './component/TabTrasaction'
 
 var objCookie = new cookie()
 
@@ -63,8 +67,14 @@ class App extends Component {
             <Route path='/add-product' component={AddProduct} exact />
             <Route path='/profile' component={Profile} exact />
             <Route path='/verify' component={VerifyEmail} exact />
-            <Route path='/product/:category' component={Product} />
-          
+            <Route path='/product/:category' component={Product}/>
+            <Route path='/transaction' component={Transaction} exact />
+            <Route path='/transaction-detail/:id' component={TransactionDetail} exact />
+            <Route path='/manage-transaction' component={ManageTransaction} exact />
+            <Route path='/finished-transaction' component={FinishedTransaction} exact />
+            <Route path='/tab-transaction' component={TabTransaction} exact />
+
+
           </ScrollToTop>
 
         </div>

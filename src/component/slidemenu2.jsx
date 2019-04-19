@@ -60,6 +60,8 @@ class ModalPage extends Component {
                                         <Link to='/manage-product'><li className='menu-item' onClick={this.toggle}>Manage Product</li></Link>
                                         <Link to='/manage-category'><li className='menu-item' onClick={this.toggle}>Manage Category</li></Link>
                                         <Link to='/manage-brand'><li className='menu-item' onClick={this.toggle}>Manage Brand</li></Link>
+                                        <Link to='/manage-transaction'><li className='menu-item' onClick={this.toggle}>Manage Transaction</li></Link>
+                                   
                                     </ul>
                                 </MDBCollapse>
                             </div> : 
@@ -67,6 +69,8 @@ class ModalPage extends Component {
                             <p className="menu-item outline-none" onClick={this.toggle}>Profile  {this.props.username}</p></Link>
                        
                         }
+                        <Link to='/transaction' ><p className='menu-item outline-none' onClick={this.toggle}>Transaction</p></Link>
+                        
                     </MDBModalBody>
 
                 </MDBModal>

@@ -81,7 +81,19 @@ class Cart extends React.Component{
     }
 
     checkoutBtn=()=>{
-        alert('checkout')
+        // alert('checkout')
+        Axios.post(urlApi+'/cart/checkout', {username : this.props.username, total : this.getTotal()})
+        .then((res)=>{
+            if(res.data.error){
+                swal("Error", res.data.msg, "error")
+            }else{
+                swal("Success", "Checkout success", "success")
+                this.getDataCart()
+                this.props.countCart(this.props.username)
+
+            }
+        })
+        .catch((err)=>console.log(err))
     }
 
     saveBtn=(id)=>{

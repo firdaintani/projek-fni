@@ -19,7 +19,7 @@ class ProductDetail extends React.Component{
     getDetail=()=>{
 
         var idUrl = this.props.match.params.id
-        alert(idUrl)
+        // alert(idUrl)
         Axios.get(urlApi+'/product/product-detail/'+idUrl)
         .then((res)=>{
             if(res.data.error){

@@ -195,17 +195,11 @@ class ManageBrand extends React.Component{
         small
         data={this.state.data}
       />
-{/* 
-      {
-        this.state.isEdit ? <ModalManageCat/>: null}
-      } */}
         { this.state.isEdit?    
       <MDBModal isOpen={this.state.isEdit} toggle={this.cancelBtn}>
       <MDBModalHeader toggle={this.cancelBtn}>Edit Brand {this.state.editItem.brand_name}</MDBModalHeader>
         <MDBModalBody>
           <input type='text' placeholder={this.state.editItem.brand_name} style={{width:'100%'}} ref='editBrand'/>
-          {/* <input type='button' className='btn btn-primary' onClick={this.saveEdit} value='Save' />
-          <input type='button' className='btn btn-danger' onClick={this.cancelBtn} value='Cancel' /> */}
           
         </MDBModalBody>
         <MDBModalFooter>

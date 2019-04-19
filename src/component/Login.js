@@ -53,24 +53,15 @@ class Login extends React.Component{
             <div className='container' style={{marginTop:'70px', paddingTop:'70px'}}>
                 {/* <center><h3 className='navbar-brand'>LOGIN</h3></center> */}
                <form style={{marginRight:'300px', marginLeft:'300px'}}>
-                {/* <div className="form-group">
-                    <label htmlFor="exampleInputEmail1">Email address</label><br></br>
-                    <input type="email" className="form-border" aria-describedby="emailHelp" placeholder="Enter email" />
-                    <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
-                </div> */}
+                
                 <div className="form-group">
                     <label htmlFor="Username">Username</label><br></br>
                     <input type="text" className="form-border outline-none" ref='username' placeholder="Enter username" />
-                    {/* <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small> */}
                 </div>
                 <div className="form-group">
                     <label htmlFor="exampleInputPassword1">Password</label><br></br>
                     <input type="password" className="form-border outline-none" placeholder="Password" ref='password'/>
                 </div>
-                {/* <div className="form-check">
-                    <input type="checkbox" className="form-check-input" id="exampleCheck1" />
-                    <label className="form-check-label" htmlFor="exampleCheck1">Check me out</label>
-                </div> */}
                 
                 {this.renderBtnOrLoading()}
               

@@ -17,6 +17,55 @@ div > .text-link:hover{
     outline: none !important;
 }
 
+
+.overlay-pict {
+    position: relative;
+    /* float: left; */
+    cursor: pointer;
+  }
+  
+  .overlay-pict:before {
+    content: "";
+    display: block;
+    position: absolute;
+    z-index: 100;
+    top: -17px;
+    bottom: -17px;
+    left: 0;
+    right: 0;
+    background:black;
+    opacity: 0.7;
+  
+  }
+
+.overlay-text{
+    color: white;
+    font-size: 20px;
+    z-index: 101;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    text-align: center;
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.sortbar:focus{
+    outline: none;
+
+}
+/* .custom-select{
+   width: 20% !important;
+    display: inline;
+} */
+
+.select-box{
+    /* display: inline; */
+    width: 20% !important;
+    /* display: inline; */
+}
+
 /* .title-text{
     font-size: 24px;
     color: #292929;

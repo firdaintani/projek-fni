@@ -14,12 +14,7 @@ class Navbar extends React.Component{
         this.toggle = this.toggle.bind(this);
         this.state = { collapse: false };
       }
-    
-    searchBtn=()=>{
-        
-        // alert(this.refs.search.className)
-        // this.refs.search.style.borderBottom='3px black solid'
-    }
+  
 
     toggle() {
       // this.refs.navbar.style.display='none'
@@ -73,9 +68,15 @@ class Navbar extends React.Component{
                 </div>
                 <div className="navbar-collapse collapse w-100 order-3 dual-collapse2">
                     <ul className="navbar-nav ml-auto">
-                    
                     <li className="nav-item">
-                       <Link to='/cart'><a className="nav-link" href="/"><i class="fas fa-shopping-cart"><sup><span class="badge badge-danger">{this.props.cart !== 0 ? this.props.cart : null}</span></sup></i></a></Link> 
+                    {
+                      this.props.role==='admin' ?
+                      <Link to='/manage-transaction'><p className='nav-link'>Transaction<sup><span class="badge badge-danger">1</span></sup></p></Link>                    
+
+                        : 
+                        <Link to='/cart'><a className="nav-link" href="/"><i class="fas fa-shopping-cart"><sup><span class="badge badge-danger">{this.props.cart !== 0 ? this.props.cart : null}</span></sup></i></a></Link> 
+
+                  }
                     </li>
                     <li className="nav-item">
                         {/* <a className="nav-link" href="/"><i class="fas fa-user"></i></a> */}
@@ -160,7 +161,8 @@ class Navbar extends React.Component{
 const mapStateToProps=(state)=>{
     return {
       username : state.user.username,
-      cart : state.user.cart
+      cart : state.user.cart,
+      role : state.user.role
     }
   }
   

@@ -1,8 +1,10 @@
 import React from 'react'
-import {Link} from 'react-router-dom'
+import {Link, withRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
 import {onRegister} from './../1. action'
 import Loader from 'react-loader-spinner'
+// import swal2 from 'sweetalert2'
+// import swal from 'sweetalert'
 
 class Register extends React.Component{
     state ={message:'' }
@@ -17,14 +19,21 @@ class Register extends React.Component{
         if(password===confirm_password){
             // alert('sama')
             var objData = {username, password,name, email,phone}
-            this.props.onRegister(objData)
+            this.props.onRegister(objData, this.props.history)
+
             this.setState({message:''})
-            this.refs.reg_conf_password.value=''
-            this.refs.reg_password.value=''
-            this.refs.reg_name.value=''
-            this.refs.reg_email.value=''
-            this.refs.reg_phone.value=''
-            this.refs.reg_username.value=''
+          
+           
+            // if(this.props.registered){
+                // this.refs.reg_conf_password.value=''
+                // this.refs.reg_password.value=''
+                // this.refs.reg_name.value=''
+                // this.refs.reg_email.value=''
+                // this.refs.reg_phone.value=''
+                // this.refs.reg_username.value=''
+                // this.props.history.push('/verify');
+
+            // }
         }else{
             // alert('beda')
             this.setState({message:'Password not same'})
@@ -94,7 +103,8 @@ class Register extends React.Component{
                  <input type="checkbox" className="form-check-input" id="exampleCheck1" />
                  <label className="form-check-label" htmlFor="exampleCheck1">Check me out</label>
              </div> */}
-             {this.renderBtnOrLoading()}
+             {/* {this.renderBtnOrLoading()} */}
+              <input type="button" className="tombol" value='REGISTER' style={{marginTop:'20px'}} onClick={this.registerBtn}></input>
              
               OR  &nbsp;
              <input type="button" className="tombol" value='REGISTER WITH GOOGLE' style={{marginTop:'20px'}}></input><br></br>
@@ -112,8 +122,9 @@ const mapStateToProps=(state)=>{
     return {
         user : state.user.username,
         error : state.user.error,
-        loading : state.user.loading
+        loading : state.user.loading,
+        registered : state.user.registered
     }
 }
 
-export default connect(mapStateToProps, {onRegister})(Register)
+export default withRouter(connect(mapStateToProps, {onRegister})(Register))

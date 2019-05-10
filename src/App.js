@@ -3,7 +3,7 @@ import './App.css';
 import Navbar from './component/Navbar'
 import Home from './component/home/Header'
 import { Route } from 'react-router-dom';
-import Product from './component/product'
+import Product from './component/product.1.jsx'
 import Login from './component/Login'
 import Register from './component/Register'
 import ProductDetail from './component/productDetail'
@@ -26,6 +26,10 @@ import TransactionDetail from './component/transactionDetail'
 import ManageTransaction from './component/admin/manageTransaction2'
 import FinishedTransaction from './component/admin/finishedTransaction'
 import TabTransaction from './component/TabTrasaction'
+import UploadPayment from './component/uploadPayment'
+import PageNotFound from './component/pageNotFound'
+import Checkout from './component/Checkout'
+
 
 var objCookie = new cookie()
 
@@ -49,10 +53,7 @@ class App extends Component {
         <div>
           <div style={{ position: 'fixed', width: '100%', top: 0, zIndex: 100 }}>
           <SlideMenu2 />
-          {/* <SlideMenu /> */}
-          
             <Navbar />
-          
           </div>
 
           <ScrollToTop>
@@ -67,13 +68,15 @@ class App extends Component {
             <Route path='/add-product' component={AddProduct} exact />
             <Route path='/profile' component={Profile} exact />
             <Route path='/verify' component={VerifyEmail} exact />
-            <Route path='/product/:category' component={Product}/>
-            <Route path='/transaction' component={Transaction} exact />
+            <Route path='/product' component={Product}/>
+            {/* <Route path='/transaction' component={Transaction} exact /> */}
             <Route path='/transaction-detail/:id' component={TransactionDetail} exact />
             <Route path='/manage-transaction' component={ManageTransaction} exact />
             <Route path='/finished-transaction' component={FinishedTransaction} exact />
-            <Route path='/tab-transaction' component={TabTransaction} exact />
-
+            <Route path='/transaction' component={TabTransaction} exact />
+            <Route path='/upload-payment/:id' component={UploadPayment} exact />
+            <Route path='/pagenotfound' component={PageNotFound} exact/>
+            <Route path='/checkout' component={Checkout} exact/>
 
           </ScrollToTop>
 
@@ -96,7 +99,9 @@ class App extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    cookie: state.user.cookie
+    cookie: state.user.cookie,
+    // getCart : state.user.getCart,
+    role : state.user.role
   }
 }
 

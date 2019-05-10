@@ -3,8 +3,10 @@ import queryString from 'query-string';
 import Axios from 'axios';
 import {urlApi} from '../support/urlApi';
 import swal from 'sweetalert';
+import Swal2 from 'sweetalert2'
 import {withRouter} from 'react-router-dom'
 import './../support/css/verifyemail.css'
+
 
 class VerifyEmail extends React.Component{
     state ={verify_check:false, user:null, error : ''}
@@ -22,7 +24,7 @@ class VerifyEmail extends React.Component{
             Axios.get(urlApi+'/user/getuser?username='+username)
             .then((res)=>{
                 if(res.data.error){
-                    swal("Error", res.data.msg, "error")
+                    swal.fire("Error", res.data.msg, "error")
                 }
                 else{
                     
@@ -41,9 +43,17 @@ class VerifyEmail extends React.Component{
         alert('hs')
         var username = this.state.user.username
         var email = this.state.user.email
+        Swal2.fire({
+            title:'Please wait', 
+            onOpen :() =>{
+                Swal2.showLoading()
+            }
+        })
+        
         Axios.put(urlApi+'/resend-email', {username, email})
         .then((res)=>{
             if(res.data==='success'){
+                Swal2.close()
                 swal({
                     title: "Success!",
                     text: "Please check your email to see the code",
@@ -51,6 +61,7 @@ class VerifyEmail extends React.Component{
                   })
     
             }else{
+                Swal2.close()
                 this.setState({error:res.data})
             }
         })

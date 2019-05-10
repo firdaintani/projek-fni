@@ -58,3 +58,23 @@
 .edit-button:hover, .save-button:hover{
     color: black;
 }
+
+.overlay-pict-cart {
+    position: relative;
+    /* float: left; */
+    cursor: pointer;
+  }
+  
+  .overlay-pict-cart:before {
+    content: "";
+    display: block;
+    position: absolute;
+    z-index: 100;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background:black;
+    opacity: 0.7;
+  
+  }

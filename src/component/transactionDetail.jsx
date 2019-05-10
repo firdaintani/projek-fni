@@ -44,13 +44,13 @@ class TransactionDetail extends React.Component{
     render(){
         return(
             <div className="container font" style={{ marginTop: '80px' }}>
-            {
+            {/* {
             this.props.role==='admin' ?
             <Link to='/manage-transaction'><input type='button' className='tombol' value='Back To Manage Transaction'/></Link>
-            :
+            : */}
             <Link to='/transaction'><input type='button' className='tombol' value='Back To Transaction'/></Link>
             
-            }
+            {/* } */}
             
             <h3 style={{marginTop:'20px'}}>Transaction Detail</h3>
             <center>

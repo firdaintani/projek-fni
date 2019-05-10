@@ -5,6 +5,8 @@ import {urlApi} from '../../support/urlApi'
 // import ModalManageCat from './modalManageCat'
 import swal from 'sweetalert'
 import { MDBBtn, MDBModal, MDBModalBody,MDBModalHeader, MDBModalFooter } from 'mdbreact';
+import { connect } from 'react-redux'
+import PageNotFound from '../pageNotFound'
 
 class ManageBrand extends React.Component{
   
@@ -174,6 +176,9 @@ class ManageBrand extends React.Component{
 
 
   render(){
+    if(this.props.role!=='admin'){
+      return <PageNotFound/>
+  }
   return (
       <div className='container' style={{marginTop:'100px'}}>
       {/* {this.state.data.rows.id} */}
@@ -218,4 +223,12 @@ class ManageBrand extends React.Component{
 
  
 }
-export default ManageBrand;
+
+
+const mapStateToProps=(state)=>{
+  return {
+      role : state.user.role
+  }
+}
+
+export default connect(mapStateToProps)(ManageBrand);

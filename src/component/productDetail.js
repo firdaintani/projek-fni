@@ -8,9 +8,10 @@ import swal from 'sweetalert'
 import {connect} from 'react-redux'
 import {countCart} from '../1. action'
 import {withRouter} from 'react-router-dom'
+import nl2br from 'react-newline-to-break'
 
 class ProductDetail extends React.Component{
-    state={qty:1, product:{}}
+    state={qty:1, product:{}, error: ""}
 
     componentDidMount(){
         this.getDetail()
@@ -26,8 +27,6 @@ class ProductDetail extends React.Component{
                 swal("Error", res.data.msg, "error")
             }else{
                 var newdata = {...res.data[0]}
-                
-                // newdata.product_image = `${urlApi}/${res.data[0].product_image}`
                 newdata.product_image = urlApi+'/'+res.data[0].product_image
                 delete res.data[0].product_image
                 
@@ -40,17 +39,21 @@ class ProductDetail extends React.Component{
     kurang=()=>{
         if(this.state.qty>1){
 
-            this.setState({qty:this.state.qty-1})
+            this.setState({qty:this.state.qty-1, error:''})
         }
     }
     tambah=()=>{
-        this.setState({qty:this.state.qty+1})
+        if(this.state.qty===this.state.product.stock){
+            this.setState({error:"not over the available stock"})
+        }else{
+            this.setState({qty:this.state.qty+1})
+            
+        }
      
     }
 
     addToCart=(id)=>{
-        // alert(id+' add to cart')
-        // alert(this.state.qty)
+        
         if(this.props.username){
             var newData = {username : this.props.username, product_id : id, quantity : this.state.qty }
             Axios.post(urlApi+'/cart/add', newData)
@@ -60,7 +63,6 @@ class ProductDetail extends React.Component{
                 }else{
                     this.props.countCart(this.props.username)
                     swal("Success", "Product has been added to cart", "success")
-                    
                 }
             })
     
@@ -82,25 +84,32 @@ class ProductDetail extends React.Component{
     
     
     render(){
-        var {name, price, id, description, product_image} = this.state.product
+        var {name, price, id, description, product_image, stock, discount} = this.state.product
         return(
             <div className='container' style={{marginTop:'70px', padding:'30px'}}>
                 <div className='row'>
-                    <div className='col-5'>
+                    <div className='col-4'>
+                    <center>
                     {/* <p  onClick={()=>alert(typeof(this.state.image))}>asa</p> */}
                         <img src={product_image} alt='produk ' className='product-image-detail mx-auto'></img>
-                        {/* <ContentZoom zoomPercent={160}
-                        largeImageUrl={this.state.image}
-                        imageUrl={this.state.image}
-                        contentHeight={450}
-                        contentWidth={450} />
-                         */}
+                       
+                         </center>
                     </div>
-                    <div className='col-7 mt-auto mb-auto' >
+                    <div className='col-8 mt-auto mb-auto' >
                     
-                        <h3 className='navbar-brand'>{name}</h3>
-                        <p style={{fontStyle:'italic'}}><Currency quantity={price} currency="IDR"/></p>
-                        <p>{description}</p>
+                        <h3 className='navbar-brand' style={{ whiteSpace:'normal'}}>{name}</h3><br></br>
+                        {
+                            discount>0 ?
+                         
+                            <p style={{textDecoration:'line-through',color:'red',display:'inline'}}><Currency quantity={price} currency="IDR"/></p>
+                        
+                            : null
+                           
+                        }
+                         <p style={{fontStyle:'italic', display:'inline'}}> <Currency quantity={price-(price*(discount/100))} currency="IDR"/></p>
+
+                        <p>Stock : {stock}</p>
+                        <p >{nl2br(description)}</p>
                        <div className='row'>
                        <div className='col-5'>
                             <div className='row'>
@@ -114,15 +123,21 @@ class ProductDetail extends React.Component{
                                 </div>
                                 <div className='col-3'>
                                 <i class="fas fa-plus" onClick={this.tambah} style={{cursor:'pointer'}}></i>
-
                                 </div>
                                 
                             </div>
                        </div>
                         </div>
-                        <hr style={{width:'180px', marginLeft:0, borderTop:'2px black solid'}}></hr>
-                             
-                        <input type='button' className='tombol' value='ADD TO CART' onClick={()=>this.addToCart(id)}></input>   
+                        <hr style={{width:'215px', marginLeft:0, borderTop:'2px black solid'}}></hr>
+                        <p style={{color:'red'}}>{this.state.error}</p>
+                                
+                        {
+                            stock === 0 ?
+                            <input type='button' className='tombol-disabled disabled' value='ADD TO CART'></input>   
+                            :
+                            <input type='button' className='tombol' style={{width:'215px'}} value='ADD TO CART' onClick={()=>this.addToCart(id)}></input>   
+
+                        }
                     </div>
                 </div>
             </div>

@@ -51,8 +51,8 @@ class ModalPage extends Component {
                         <Link to='/' ><p className='menu-item outline-none' onClick={this.toggle}>Home</p></Link>
 
                         <Link to='/product/all'><p className="menu-item outline-none" onClick={this.toggle}>Shop</p></Link>
-                        
-                        { this.props.role==='admin' ?
+
+                        {this.props.role === 'admin' ?
                             <div>
                                 <p onClick={this.toggleCollapse("basicCollapse")} style={{ cursor: 'pointer' }} className='menu-item'>Manage &nbsp;&nbsp;&nbsp; <i class="fas fa-angle-down"></i></p>
                                 <MDBCollapse id="basicCollapse" isOpen={this.state.collapseID}>
@@ -60,17 +60,19 @@ class ModalPage extends Component {
                                         <Link to='/manage-product'><li className='menu-item' onClick={this.toggle}>Manage Product</li></Link>
                                         <Link to='/manage-category'><li className='menu-item' onClick={this.toggle}>Manage Category</li></Link>
                                         <Link to='/manage-brand'><li className='menu-item' onClick={this.toggle}>Manage Brand</li></Link>
-                                        <Link to='/manage-transaction'><li className='menu-item' onClick={this.toggle}>Manage Transaction</li></Link>
-                                   
+                                        <Link to='/transaction'><li className='menu-item' onClick={this.toggle}>Manage Transaction</li></Link>
+
                                     </ul>
                                 </MDBCollapse>
-                            </div> : 
-                            <Link to='/profile'>
-                            <p className="menu-item outline-none" onClick={this.toggle}>Profile  {this.props.username}</p></Link>
-                       
+                            </div> : this.props.role==='user' ?
+                            <div>
+                                <Link to='/profile'>
+                                    <p className="menu-item outline-none" onClick={this.toggle}>Profile  {this.props.username}</p></Link>
+                                <Link to='/transaction' ><p className='menu-item outline-none' onClick={this.toggle}>Transaction</p></Link>
+                            </div> : null
                         }
-                        <Link to='/transaction' ><p className='menu-item outline-none' onClick={this.toggle}>Transaction</p></Link>
-                        
+                        {/* <Link to='/transaction' ><p className='menu-item outline-none' onClick={this.toggle}>Transaction</p></Link> */}
+
                     </MDBModalBody>
 
                 </MDBModal>
@@ -83,7 +85,7 @@ class ModalPage extends Component {
 const mapStateToProps = (state) => {
     return {
         role: state.user.role,
-        username : state.user.username
+        username: state.user.username
     }
 }
 

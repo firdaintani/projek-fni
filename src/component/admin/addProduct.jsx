@@ -4,6 +4,8 @@ import { urlApi } from '../../support/urlApi'
 import swal from 'sweetalert'
 import '../../support/css/addProduct.css'
 import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
+import PageNotFound from '../pageNotFound'
 
 class AddProduct extends React.Component {
     state = { brand: [], category: [], selectedFile: null, error: '' }
@@ -29,7 +31,7 @@ class AddProduct extends React.Component {
         Axios.get(urlApi + '/brand/all')
             .then((res) => {
                 if (res.data.error) {
-                    swal("Error", res.data.msg, 'error')
+                    swal.fire("Error", res.data.msg, 'error')
                 } else {
                     this.setState({ brand: res.data })
                 }
@@ -41,7 +43,7 @@ class AddProduct extends React.Component {
         Axios.get(urlApi + '/category/all')
             .then((res) => {
                 if (res.data.error) {
-                    swal("Error", res.data.msg, 'error')
+                    swal.fire("Error", res.data.msg, 'error')
                 } else {
                     this.setState({ category: res.data })
                 }
@@ -76,9 +78,9 @@ class AddProduct extends React.Component {
         var stock = parseInt(this.refs.inputStock.value)
         var description = this.refs.inputDesc.value
 
-        // alert(description)
+        // alert(name + ' '+ brand_id+ ' '+category_id+ ' '+price+ ' '+discount+ ' '+stock+ ' '+description +' '+ this.state.selectedFile)
 
-        if (name && brand_id && category_id && price && discount && stock && description && this.state.selectedFile) {
+        if (name && brand_id && category_id && price && (discount>=0) && stock && description && this.state.selectedFile) {
             var data = { name, brand_id, category_id, price, discount, stock, description }
 
             var fd = new FormData()
@@ -99,13 +101,16 @@ class AddProduct extends React.Component {
 
                 })
                 .catch((err) => console.log(err))
-
+            // alert('isi semua')
         } else {
             swal("Warning", "Please fill all the form", "warning")
         }
     }
 
     render() {
+        if(this.props.role!=='admin'){
+            return <PageNotFound/>
+        }
         return (
             <div className="container" style={{ marginTop: '100px', marginBottom: '50px' }}>
                 {/* ROW */}
@@ -168,7 +173,7 @@ class AddProduct extends React.Component {
 
                         </div>
                         <div className="col-md-9">
-                            <input type="number" className="form-border outline-none" defaultValue='0' ref='inputDiscount' />
+                            <input type="number" className="form-border outline-none" defaultValue={0} ref='inputDiscount' />
 
                         </div>
                     </div>
@@ -245,4 +250,10 @@ class AddProduct extends React.Component {
     }
 }
 
-export default AddProduct
+const mapStateToProps=(state)=>{
+    return {
+        role : state.user.role
+    }
+}
+
+export default connect(mapStateToProps)(AddProduct)

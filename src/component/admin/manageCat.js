@@ -5,11 +5,13 @@ import {urlApi} from '../../support/urlApi'
 // import ModalManageCat from './modalManageCat'
 import swal from 'sweetalert'
 import { MDBBtn, MDBModal, MDBModalBody,MDBModalHeader, MDBModalFooter } from 'mdbreact';
+import {connect} from 'react-redux'
+import PageNotFound from '../pageNotFound'
 
 class ManageCat extends React.Component{
   
     
-    state={ data : {
+    state={selectedFile: null,selectedFileEdit: null, data : {
       columns: [
        
         {
@@ -21,6 +23,12 @@ class ManageCat extends React.Component{
         {
           label : 'Category',
           field : 'category_name',
+          sort : 'asc',
+          width : 300
+        }, 
+        {
+          label : 'Pict',
+          field : 'category_picture',
           sort : 'asc',
           width : 300
         }, 
@@ -48,6 +56,17 @@ class ManageCat extends React.Component{
     this.getCategory()
   }
 
+  onChangeHandler = (event) => {
+    console.log(event.target.files[0])
+    this.setState({ selectedFile: event.target.files[0] })
+
+  }
+
+  valueHandler = () => {
+
+      var value = this.state.selectedFile ? this.state.selectedFile.name : 'PICK A PICTURE'
+      return value
+  }
   
   mapData=(data)=>{
     var newData = {...this.state.data}
@@ -56,6 +75,8 @@ class ManageCat extends React.Component{
       return {
         no : index+1,
         category_name : `${val.category_name}`,
+        product_image: <img src={urlApi+'/'+val.category_picture} alt='category' className='manage-product-pict' />,
+               
         edit : <input type='button' value='edit' className='btn btn-primary' onClick={()=>this.editBtn(val)}/>,
         delete : <input type='button' value='delete' className='btn btn-danger' onClick={()=>this.deleteBtn(val.id)}/>
       }
@@ -77,11 +98,46 @@ class ManageCat extends React.Component{
     })
     .catch((err)=>console.log(err))
   }
+  valueHandlerEdit = () => {
+    // return this.state.selectedFile.
+    var value = this.state.selectedFileEdit ? this.state.selectedFileEdit.name : 'Pick a pict'
+    return value
+  }
+
+  onChangeHandlerEdit = (event) => {
+      console.log(event.target.files[0])
+      this.setState({ selectedFileEdit: event.target.files[0] })
+
+  }
 
   saveEdit=()=>{
-    var category_name = this.refs.editCategory.value
+    var category_name = this.refs.editCategory.value ? this.refs.editCategory.value : this.state.editItem.category_name
 
-    if(category_name){
+    if (this.state.selectedFileEdit) {
+      // alert('masuk')
+      var fd = new FormData()
+      fd.append('newImage', this.state.selectedFileEdit,this.state.selectedFileEdit.name)
+      fd.append('newData', JSON.stringify({category_name}))
+      fd.append('oldImage', this.state.editItem.category_picture)
+      Axios.put(urlApi + '/category/update/' + this.state.editItem.id, fd)
+          .then((res) => {
+
+              if (res.data.error) {
+                  swal("Error", res.data.msg, "error")
+              }
+              else {
+                // alert('masuk')
+                this.mapData(res.data)
+                  swal("Success", "Category has been updated", "success")
+                  this.setState({ isEdit: false, editItem: null, selectedFileEdit: null })
+                  // alert(res.data.length)
+                 
+              }
+
+          })
+          .catch((err) => console.log(err))
+  }else{
+    // if(category_name){
       Axios.put(urlApi+'/category/update/'+this.state.editItem.id, {category_name})
       .then((res)=>{
         if(res.data.error)
@@ -90,20 +146,21 @@ class ManageCat extends React.Component{
 
         }
         else{
-          swal("Success!","Product has been updated", "success");
-          // this.getCategory()
-          this.mapData(res.data)
           this.cancelBtn()
+          // alert('masuk')
+          swal("Success!","Product has been updated", "success");
+          this.mapData(res.data)
+         
 
         }
       })
       .catch((err)=>console.log(err))
 
-    }else{
-      this.cancelBtn()
-    }
+    // }else{
+    //   this.cancelBtn()
+    // }
   }
-
+}
   editBtn=(val)=>{
     // alert(val.category_name)
     this.setState({isEdit:true,editItem:val})
@@ -146,14 +203,19 @@ class ManageCat extends React.Component{
 
   addCategory=()=>{
     var category_name = this.refs.inputCategory.value
-    if(category_name===''){
+    if(category_name==='' || this.state.selectedFile===null){
       swal({
         text: "Must not empty!",
         icon: "warning",
       })
     }else{
       // alert(category)
-      Axios.post(urlApi+'/category/add', {category_name})
+      
+      var fd = new FormData()
+      fd.append('category_image', this.state.selectedFile, this.state.selectedFile.name)
+      fd.append('data', JSON.stringify({category_name}))
+      
+      Axios.post(urlApi+'/category/add', fd)
       .then((res)=>{
         if(res.data.error){
           swal({
@@ -171,6 +233,9 @@ class ManageCat extends React.Component{
 
 
   render(){
+    if(this.props.role!=='admin'){
+      return <PageNotFound/>
+  }
   return (
       <div className='container' style={{marginTop:'100px'}}>
       {/* {this.state.data.rows.id} */}
@@ -179,12 +244,16 @@ class ManageCat extends React.Component{
             <div className='col-md-5'>
               <input type='text' placeholder='enter category' ref='inputCategory' className='form-border outline-none'></input>
             </div>
+           <div className='col-md-3'>
+             <input type='file' ref='inputfile' style={{ display: 'none' }} onChange={this.onChangeHandler} />
+             <input type='button' className='tombol' value={this.valueHandler()} style={{ width: '100%' }} onClick={() => this.refs.inputfile.click()} />
+
+           </div>
             <div className='col-md-4'>
               <input type='button' className='tombol outline-none' value='ADD' onClick={this.addCategory}></input>
             </div>
-          
+
           </div>
-   
       <div ></div>
       <MDBDataTable
         striped
@@ -200,8 +269,19 @@ class ManageCat extends React.Component{
       <MDBModal isOpen={this.state.isEdit} toggle={this.cancelBtn}>
       <MDBModalHeader toggle={this.cancelBtn}>Edit Category {this.state.editItem.category_name}</MDBModalHeader>
         <MDBModalBody>
-          <input type='text' placeholder={this.state.editItem.category_name} style={{width:'100%'}} ref='editCategory'/>
-      
+          <div className='row'>
+            <div className='col-md-7'>
+               <input type='text' placeholder={this.state.editItem.category_name} style={{width:'100%'}} ref='editCategory'/>
+        
+            </div>
+            <div className='col-md-5'>
+                <img src={urlApi +'/'+ this.state.editItem.category_picture} width='100%' alt='product pic'></img>
+                <input type='file' onChange={this.onChangeHandlerEdit} style={{ display: 'none' }} ref='inputEditPict' />
+                <input type='button' value={this.valueHandlerEdit()} className='btn btn-success mt-2' style={{ width: '100%' }} onClick={() => { this.refs.inputEditPict.click() }}></input>
+            </div>
+          </div>
+          
+          
           
         </MDBModalBody>
         <MDBModalFooter>
@@ -220,4 +300,11 @@ class ManageCat extends React.Component{
 
  
 }
-export default ManageCat;
+
+const mapStateToProps=(state)=>{
+  return {
+      role : state.user.role
+  }
+}
+
+export default connect(mapStateToProps)(ManageCat);

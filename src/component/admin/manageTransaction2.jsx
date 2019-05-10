@@ -5,18 +5,28 @@ import Axios from 'axios'
 import { urlApi } from '../../support/urlApi'
 import swal from 'sweetalert'
 
+import Currency from 'react-currency-formatter'
+import {connect} from 'react-redux'
+import PageNotFound from '../pageNotFound'
+
 class ManageTransaction2 extends React.Component {
     state = {
         isEdit: false, itemEdited: {},
         data: {
             columns: [
-
                 {
                     label: 'Order ID',
                     field: 'id',
                     sort: 'asc',
                     width: 100
                 },
+                {
+                    label: 'Username',
+                    field: 'username',
+                    sort: 'asc',
+                    width: 100
+                },
+                
                 {
                     label: 'Order Date',
                     field: 'order_date',
@@ -36,18 +46,18 @@ class ManageTransaction2 extends React.Component {
                     width: 300
                 },
 
-                {
-                    label: 'Edit',
-                    field: 'edit',
-                    sort: 'disabled',
-                    width: 20
-                },
-                {
-                    label: 'Delete',
-                    field: 'delete',
-                    sort: 'disabled',
-                    width: 20
-                },
+                // {
+                //     label: 'Edit',
+                //     field: 'edit',
+                //     sort: 'disabled',
+                //     width: 20
+                // },
+                // {
+                //     label: 'Delete',
+                //     field: 'delete',
+                //     sort: 'disabled',
+                //     width: 20
+                // },
                 {
                     label: 'Detail',
                     field: 'detail',
@@ -69,6 +79,7 @@ class ManageTransaction2 extends React.Component {
                 if (res.data.error) {
                     swal("Error", res.data.msg, "error")
                 } else {
+                    
                     this.mapData(res.data)
                 }
             })
@@ -83,11 +94,12 @@ class ManageTransaction2 extends React.Component {
         var dataBr = data.map((val) => {
             return {
                 id: val.id,
+                username : val.username,
                 order_date: `${val.order_date}`,
                 status: 'Havent pay',
-                total: `${val.total}`,
-                edit: <input type='button' value='edit' className='btn btn-primary' onClick={() => this.editBtn(val)} />,
-                delete: <input type='button' value='delete' className='btn btn-danger' onClick={() => this.deleteBtn(val.id)} />,
+                total: <Currency quantity={val.total} currency="IDR"/>,
+                // edit: <input type='button' value='edit' className='btn btn-primary' onClick={() => this.editBtn(val)} />,
+                // delete: <input type='button' value='delete' className='btn btn-danger' onClick={() => this.deleteBtn(val.id)} />,
                 detail: <Link to={'/transaction-detail/' + val.id}><input type='button' value='detail' className='btn btn-success' /></Link>
 
             }
@@ -153,9 +165,12 @@ class ManageTransaction2 extends React.Component {
 
     }
     render() {
+        if(this.props.role!=='admin'){
+            return <PageNotFound/>
+        }
         return (
-            <div className="container" style={{ marginTop: '80px' }}>
-                <div className="row">
+            <div className="container" style={{ marginTop: '20px' }}>
+                {/* <div className="row">
                     <div className="col-md-6">
                         <h3>Manage Transaction</h3>
 
@@ -164,14 +179,23 @@ class ManageTransaction2 extends React.Component {
                         <Link to='/finished-transaction'><input type='button' className='tombol' value='Finished Transaction' style={{ float: 'right', marginBottom: '30px' }} /></Link>
 
                     </div>
-                </div>
-
-                <MDBDataTable
+                </div> */}
+                {
+                    this.state.data.rows.length===0?
+                    <h4>Transaction Empty</h4> :
+                    <div>
+                    
+                        
+                    <MDBDataTable
                     striped
                     bordered
                     small
                     data={this.state.data}
+                    
                 />
+                </div>
+
+                }
 
                 {
                     this.state.isEdit ?
@@ -210,4 +234,10 @@ class ManageTransaction2 extends React.Component {
     }
 }
 
-export default ManageTransaction2
+const mapStateToProps=(state)=>{
+    return {
+        role : state.user.role
+    }
+}
+
+export default connect(mapStateToProps)(ManageTransaction2)

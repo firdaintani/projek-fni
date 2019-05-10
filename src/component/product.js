@@ -102,10 +102,24 @@ class Product extends React.Component{
         var jsx = this.state.product.map((val) => {
             return (
                 <div className="card col-md-3 mr-5 mt-3 border-card" style={{width: '18rem'}} onClick={()=>this.toProdDetail(val.id)}>
-                {/* <p style={{textAlign:'center',marginTop:'20px'}} className='border-brand'>{val.brand_name}<i class="fas fa-cart-plus icon-add-cart" onClick={()=>alert('add to cart'+ val.id)}></i></p> */}
                 <p style={{textAlign:'center',marginTop:'20px'}} className='border-brand'>{val.brand_name}</p>
-                
-                    <img title={val.name} className="card-img-top gambar-list" src={urlApi+'/'+val.product_image} alt="Card" />
+               {
+                   val.stock===0 ?
+                   <div class="overlay-pict">
+                   <img title={val.name} className="card-img-top gambar-list" src={urlApi+'/'+val.product_image} alt="Card" />
+
+                  {/* <div class="overlay-pict"> */}
+                  <div class="overlay-text">Out of Stock</div>
+              {/* </div> */}
+              </div>
+                :
+               
+                <img title={val.name +' '+val.stock} className="card-img-top gambar-list" src={urlApi+'/'+val.product_image} alt="Card" />
+
+               } 
+               
+               
+               
                     {   
                         val.discount > 0 ?
                         <div className='discount-triangle'>

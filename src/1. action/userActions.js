@@ -2,6 +2,10 @@ import Axios from "axios";
 import cookie from 'universal-cookie'
 import {urlApi} from '../support/urlApi'
 import swal from "sweetalert";
+import swal2 from 'sweetalert2'
+import { BrowserRouter} from 'react-router-dom';
+
+
 var objCookie = new cookie()
 
 export const onLogin=(username,password)=>{
@@ -23,7 +27,6 @@ export const onLogin=(username,password)=>{
                         type:'NOT_VERIFIED'
                     })
                 }else{
-                    
                 dispatch({
                     type:'LOGIN_SUCCESS',
                     payload : res.data[0]
@@ -67,16 +70,23 @@ export const onLogout = () => {
     }
 }
 
-export const onRegister=(objData)=>{
+export const onRegister=(objData,history)=>{
     return (dispatch)=>{
-        dispatch({
-            type:'LOADING'
+        // dispatch({
+        //     type:'LOADING'
+        // })
+
+        swal2.fire({
+            title:'Please wait', 
+            onOpen :() =>{
+                swal2.showLoading()
+            }
         })
-        
         Axios.post(urlApi+'/register',objData)
         .then((res)=>{
             if(res.data.error){
             // alert(res.data)
+            swal2.close()
             dispatch({
                 type:'USERNAME_NOT_AVAILABLE',
                 payload:res.data.msg
@@ -84,18 +94,27 @@ export const onRegister=(objData)=>{
             })
         }
          else{
+            swal2.close()
+            swal({
+                title: "Success!",
+                text: "Register success! Please check your email for your verification",
+                icon: "success",
+                
+              })
+              .then((value)=>{
+                history.push('/verify?username='+objData.username)
+
+              })
+              
         //    alert('berhasil')
                 dispatch({
                     type:'REGISTER_SUCCESS',
                     
                 })
+                
+                // browserHistory.push('/verify?username='+objData.username)
                 // objCookie.set('username', res.data.username, {path : '/'})
-                swal({
-                    title: "Success!",
-                    text: "Register success! Please check your email for your verification",
-                    icon: "success",
-                    
-                  });
+               
          }
         })
     }

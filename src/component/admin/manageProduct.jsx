@@ -5,6 +5,8 @@ import Axios from 'axios'
 import swal from 'sweetalert'
 import { urlApi } from './../../support/urlApi'
 import '../../support/css/manageProduct.css'
+import { connect } from 'react-redux'
+import PageNotFound from '../pageNotFound'
 
 import { MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter } from 'mdbreact';
 
@@ -92,7 +94,7 @@ class ManageProduct extends React.Component {
     }
 
     getDataProduct = () => {
-        Axios.get(urlApi + '/product/all')
+        Axios.get(urlApi + '/product/product-list')
             .then((res) => {
                 if (res.data.error) {
                     swal("Error", res.data.msg, 'error')
@@ -281,6 +283,9 @@ class ManageProduct extends React.Component {
     }
 
     render() {
+        if(this.props.role!=='admin'){
+            return <PageNotFound/>
+        }
         return (
             <div className="container" style={{ marginTop: '100px' }}>
                 <h3>Manage Product</h3>
@@ -309,7 +314,7 @@ class ManageProduct extends React.Component {
                                     <form>
                                         <div className="form-group">
                                             <label>Product Name </label><br></br>
-                                            <input type='text' className='form-control' placeholder={this.state.editItem.name} width='100%' ref='editName'></input>
+                                            <input type='text' className='form-control' defaultValue={this.state.editItem.name} width='100%' ref='editName'></input>
 
                                         </div>
                                         <div className="form-group">
@@ -327,22 +332,22 @@ class ManageProduct extends React.Component {
                                         </div>
                                         <div className="form-group">
                                             <label>Price </label><br></br>
-                                            <input type='number' className='form-control' placeholder={this.state.editItem.price} width='100%' ref='editPrice'></input>
+                                            <input type='number' className='form-control' defaultValue={this.state.editItem.price} width='100%' ref='editPrice'></input>
 
                                         </div>
                                         <div className="form-group">
                                             <label>Discount </label><br></br>
-                                            <input type='number' className='form-control' placeholder={this.state.editItem.discount} width='100%' ref='editDiscount'></input>
+                                            <input type='number' className='form-control' defaultValue={this.state.editItem.discount} width='100%' ref='editDiscount'></input>
 
                                         </div>
                                         <div className="form-group">
                                             <label>Stock </label><br></br>
-                                            <input type='number' className='form-control' placeholder={this.state.editItem.stock} width='100%' ref='editStock'></input>
+                                            <input type='number' className='form-control' defaultValue={this.state.editItem.stock} width='100%' ref='editStock'></input>
 
                                         </div>
                                         <div className="form-group">
                                             <label>Description </label><br></br>
-                                            <textarea rows={6} className='form-control' placeholder={this.state.editItem.description} width='100%' ref='editDescription'></textarea>
+                                            <textarea rows={6} className='form-control' defaultValue={this.state.editItem.description} width='100%' ref='editDescription'></textarea>
 
                                         </div>
                                     </form>
@@ -364,4 +369,10 @@ class ManageProduct extends React.Component {
     }
 }
 
-export default ManageProduct
+const mapStateToProps=(state)=>{
+    return {
+        role : state.user.role
+    }
+}
+
+export default connect(mapStateToProps)(ManageProduct)

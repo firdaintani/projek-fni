@@ -19,6 +19,7 @@ class ManageCategory extends React.Component{
     })
     .catch((err)=>console.log(err))
   }
+  
   addCategory=()=>{
     var category = this.refs.inputCategory.value
     if(category===''){

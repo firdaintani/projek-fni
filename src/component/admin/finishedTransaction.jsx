@@ -6,6 +6,7 @@ import swal from 'sweetalert';
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import cookie from 'universal-cookie'
+import Currency from 'react-currency-formatter'
 import PageNotFound from '../pageNotFound';
 
 const objCookie = new cookie()
@@ -70,7 +71,7 @@ class FinishedTransaction extends React.Component {
             return {
                 id: val.id,
                 order_date: `${val.order_date}`,
-                total: `${val.total}`,
+                total:<Currency quantity={val.total} currency="IDR" />,
                 detail: <Link to={'/transaction-detail/' + val.id}><input type='button' value='detail' className='btn btn-success' /></Link>
 
             }
@@ -148,12 +149,17 @@ class FinishedTransaction extends React.Component {
         return (
             <div className="container" style={{ marginTop: '20px' }}>
                 {/* <h3>Finished Transaction</h3> */}
-                <MDBDataTable
+                {
+                    this.state.data.rows.length === 0 ?
+                    <h4>Transaction Empty</h4>:
+                    <MDBDataTable
                     striped
                     bordered
                     small
                     data={this.state.data}
                 />
+              }
+              
             </div>
         )
     }

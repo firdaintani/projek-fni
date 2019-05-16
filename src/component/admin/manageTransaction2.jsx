@@ -74,6 +74,11 @@ class ManageTransaction2 extends React.Component {
     }
 
     getTransaction = () => {
+        if(this.props.location.search){
+
+        }else{
+            
+        }
         Axios.get(urlApi + '/transaction/all')
             .then((res) => {
                 if (res.data.error) {

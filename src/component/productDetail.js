@@ -67,7 +67,7 @@ class ProductDetail extends React.Component{
             })
     
     
-        }
+        } 
         else{
             swal("Error","You need to login!", "error")
             .then((willLogin) => {

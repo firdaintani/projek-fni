@@ -21,14 +21,16 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import Loader from 'react-loader-spinner'
 import SlideMenu2 from './component/slidemenu2.jsx'
-import Transaction from './component/transaction'
-import TransactionDetail from './component/transactionDetail'
-import ManageTransaction from './component/admin/manageTransaction2'
+// import Transaction from './component/transaction'
+import TransactionDetail from './component/transactionDetail2'
+import ManageTransaction from './component/admin/manageTransaction'
 import FinishedTransaction from './component/admin/finishedTransaction'
 import TabTransaction from './component/TabTrasaction'
 import UploadPayment from './component/uploadPayment'
 import PageNotFound from './component/pageNotFound'
 import Checkout from './component/Checkout'
+import FinishCheckout from './component/checkout2'
+import Countdown from './component/Countdown'
 
 
 var objCookie = new cookie()
@@ -69,17 +71,19 @@ class App extends Component {
             <Route path='/profile' component={Profile} exact />
             <Route path='/verify' component={VerifyEmail} exact />
             <Route path='/product' component={Product}/>
-            {/* <Route path='/transaction' component={Transaction} exact /> */}
+
             <Route path='/transaction-detail/:id' component={TransactionDetail} exact />
             <Route path='/manage-transaction' component={ManageTransaction} exact />
             <Route path='/finished-transaction' component={FinishedTransaction} exact />
-            <Route path='/transaction' component={TabTransaction} exact />
+            <Route path='/transaction' component={TabTransaction} />
             <Route path='/upload-payment/:id' component={UploadPayment} exact />
             <Route path='/pagenotfound' component={PageNotFound} exact/>
             <Route path='/checkout' component={Checkout} exact/>
+            <Route path='/finishcheckout/:id' component={FinishCheckout} exact/>
+            <Route path='/countdown' component={Countdown} exact/>
 
           </ScrollToTop>
-
+        
         </div>
       );
     }

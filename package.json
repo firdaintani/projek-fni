@@ -13,6 +13,7 @@
     "react": "^16.7.0",
     "react-burger-menu": "^2.6.5",
     "react-content-zoom": "^1.0.3",
+    "react-countdown-now": "^2.1.0",
     "react-currency-formatter": "^1.1.0",
     "react-dom": "^16.7.0",
     "react-fixed-sidebar": "^1.1.3",

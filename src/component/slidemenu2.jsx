@@ -41,7 +41,6 @@ class ModalPage extends Component {
     render() {
         return (
             <div className='font'>
-                {/* <MDBBtn color="info" onClick={this.toggle(8)}>Right</MDBBtn> */}
                 <div>
                     <i onClick={this.toggle} class="fas fa-bars fa-2x icon-menu" ></i>
                 </div>
@@ -66,8 +65,6 @@ class ModalPage extends Component {
                                 </MDBCollapse>
                             </div> : this.props.role==='user' ?
                             <div>
-                                <Link to='/profile'>
-                                    <p className="menu-item outline-none" onClick={this.toggle}>Profile  {this.props.username}</p></Link>
                                 <Link to='/transaction' ><p className='menu-item outline-none' onClick={this.toggle}>Transaction</p></Link>
                             </div> : null
                         }

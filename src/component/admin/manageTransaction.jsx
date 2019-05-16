@@ -1,117 +1,209 @@
 import React from 'react'
+import { MDBDataTable } from 'mdbreact';
 import { Link } from 'react-router-dom'
-import Currency from 'react-currency-formatter'
-import { urlApi } from '../../support/urlApi';
-import Axios from 'axios';
+import Axios from 'axios'
+import { urlApi } from '../../support/urlApi'
 import swal from 'sweetalert'
+import queryString from 'query-string';
+import Currency from 'react-currency-formatter'
+import {connect} from 'react-redux'
+import PageNotFound from '../pageNotFound'
+import {withRouter} from 'react-router-dom'
 
-class ManageTransaction extends React.Component {
-    state = { transactionList: [], isEdit: false, idEdit: 0 }
-    componentDidMount() {
-        this.getTransaction()
+class ManageTransaction2 extends React.Component {
+    state = {
+       searchKey : '',
+        data: {
+            columns: [
+                {
+                    label: 'Order ID',
+                    field: 'id',
+                    sort: 'asc',
+                    width: 100
+                },
+                {
+                    label: 'Username',
+                    field: 'username',
+                    sort: 'asc',
+                    width: 100
+                },
+                
+                {
+                    label: 'Order Date',
+                    field: 'order_date',
+                    sort: 'asc',
+                    width: 300
+                },
+                {
+                    label: 'Total',
+                    field: 'total',
+                    sort: 'asc',
+                    width: 300
+                },
+
+                {
+                    label: 'Detail',
+                    field: 'detail',
+                    sort: 'disabled',
+                    width: 20
+                }
+            ],
+            rows: []
+        }
     }
 
-    getTransaction = () => {
-        Axios.get(urlApi + '/transaction/all')
+    getTransaction = (link) => {
+      
+            Axios.get(urlApi + link)
             .then((res) => {
                 if (res.data.error) {
                     swal("Error", res.data.msg, "error")
                 } else {
-                    this.setState({ transactionList: res.data })
+                   
+                    this.mapData(res.data)
                 }
             })
             .catch((err) => console.log(err))
+       
+        
     }
 
-    saveBtn=()=>{
-        var status = this.refs.status.value
-        // alert(status)
-        Axios.put(urlApi+'/transaction/update/'+this.state.idEdit, {status})
-        .then((res) => {
-            if (res.data.error) {
-                swal("Error", res.data.msg, "error")
+
+    getLink = () => {
+        let params = queryString.parse(this.props.location.search);
+        var newLink = `/transaction/search`
+        var link = []
+        if (params.u) {
+            link.push({
+                params: 'u',
+                value: params.u
+            })
+        }
+        if (params.m) {
+
+            link.push({
+                params: 'm',
+                value: params.m
+            })
+        }
+        
+        for (var i = 0; i < link.length; i++) {
+            if (i === 0) {
+                newLink += '?' + link[i].params + '=' + link[i].value
             } else {
-                
-                swal("Success", "Edit status success", "success")
-                this.setState({ transactionList: res.data })
+                newLink += '&' + link[i].params + '=' + link[i].value
+            }
+        }
+       
+        return newLink+'&s=1'
+    }
+    componentDidMount() {
+        if(this.props.linkUrl){         
+            this.getTransaction(this.props.linkUrl)
+        }else{
+            this.getTransaction('/transaction/search?s=1')
+
+        }   
+     }
+  
+
+    componentWillReceiveProps(newProps){
+           if(newProps.linkUrl){
+        
+            this.getTransaction(newProps.linkUrl)
+        }else{
+            this.getTransaction('/transaction/search?s=1')
+
+        }   
+        }
+
+    
+
+
+
+
+
+    mapData = (data) => {
+        var newData = { ...this.state.data }
+        var dataBr = data.map((val) => {
+            return {
+                id: val.id,
+                username : val.username,
+                order_date: `${val.order_date}`,
+                total: <Currency quantity={val.total} currency="IDR"/>,
+                detail: <Link to={'/transaction-detail/' + val.id}><input type='button' value='detail' className='btn btn-success' /></Link>
+
             }
         })
-        .catch((err) => console.log(err))
+        newData.rows = dataBr
+        this.setState({ data: newData })
+
     }
 
-    renderTransaction = () => {
-        var data = this.state.transactionList.map((val) => {
-
-            return (
-                <tr>
-                    <td>{val.id}</td>
-                    <td>{val.order_date}</td>
-                    <td><Currency quantity={val.total} currency="IDR" /></td>
-                    {
-                        this.state.idEdit === val.id ?
-                            <td>
-                                <select ref='status'>
-                                    <option value={0}>Havent Pay</option>
-                                    <option value={1}>Paid</option>
-
-                                </select>
-                            </td>
-                            :
-                            <td>{val.status === 0 ? 'Havent pay' : 'Paid'}</td>
-
-                    }
-                    {
-                        this.state.idEdit === val.id ?
-
-                            <td><input type='button' className='tombol' value='SAVE' onClick={this.saveBtn} />
-                                <input type='button' style={{ marginLeft: '20px' }} className='tombol' value='CANCEL' onClick={() => { this.setState({ idEdit: 0 }) }} />
-                            </td>
-
-                            :
-                            <td><input type='button' className='tombol' value='EDIT' onClick={() => this.setState({ isEdit: true, idEdit: val.id })} />
-                                <Link to={'/transaction-detail/' + val.id}><input style={{ marginLeft: '20px' }} type='button' className='tombol' value='DETAIL' /></Link>
-                            </td>
-
-                    }
-                    {/* <Link to={'/transaction-detail/' + val.id}><td><input type='button' className='tombol' value='DETAIL' /></td></Link> */}
-                </tr>
-            )
+    deleteBtn = (id) => {
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this data!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
         })
-        return data
-    }
+            .then((willDelete) => {
+                if (willDelete) {
+                    Axios.delete(urlApi + '/transaction/delete/' + id)
+                        .then((res) => {
+                            if (res.data.error) {
+                                swal({
+                                    text: res.data.msg,
+                                    icon: "warning",
+                                })
+                            } else {
+                                this.getTransaction()
+                                swal("Data has been deleted!", {
+                                    icon: "success",
+                                });
 
+
+                            }
+                        })
+                } else {
+                    swal("Your data is safe!");
+                }
+            });
+        }
     render() {
+        if(this.props.role!=='admin'){
+            return <PageNotFound/>
+        }
         return (
-            <div className="container" style={{ marginTop: '70px' }}>
-                <h3>Manage Transaction</h3>
-                <Link to='/finished-transaction'><input type='button' className='tombol' value='Finished Transaction' style={{ float: 'right', marginBottom: '30px' }} /></Link>
+            <div className="container" style={{ marginTop: '20px' }}>
+                {
+                    this.state.data.rows.length===0?
+                    <h4>Transaction Empty</h4> :
+                    <div>
+                    
+                        
+                    <MDBDataTable
+                    striped
+                    bordered
+                    small
+                    data={this.state.data}
+                    
+                />
+                </div>
 
-                <center>
+                }
 
-                    <table className='table' style={{ width: '90%' }}>
-
-                        <thead style={{ textAlign: 'center' }}>
-
-                            <td>ID Order</td>
-                            <td>Order Date</td>
-                            <td>Total</td>
-                            <td>Status</td>
-                            <td></td>
-                        </thead>
-                        <tbody style={{ textAlign: 'center' }}>
-
-                            {this.renderTransaction()}
-
-                        </tbody>
-
-                    </table>
-
-                </center>
-
-
+              <p>{this.props.linkUrl}</p>
             </div>
         )
     }
 }
 
-export default ManageTransaction
+const mapStateToProps=(state)=>{
+    return {
+        role : state.user.role
+    }
+}
+
+export default withRouter(connect(mapStateToProps)(ManageTransaction2))

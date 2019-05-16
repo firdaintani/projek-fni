@@ -61,7 +61,6 @@ class Product extends React.Component {
 
 
     getProductList = () => {
-
         if (this.props.location.search) {
             var newLink = this.getLink()
             Axios.get(urlApi + newLink)
@@ -95,29 +94,23 @@ class Product extends React.Component {
         var newLink = `/product/search`
         var link = []
         if (params.key) {
-
             link.push({
                 params: 'key',
                 value: params.key
             })
-
         }
-
         if (params.category) {
 
             link.push({
                 params: 'category',
                 value: params.category
             })
-
         }
         if (params.brand) {
-
             link.push({
                 params: 'brand',
                 value: params.brand
             })
-
         }
         if (params.price_min) {
 

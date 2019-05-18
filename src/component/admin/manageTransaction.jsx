@@ -4,13 +4,13 @@ import { Link } from 'react-router-dom'
 import Axios from 'axios'
 import { urlApi } from '../../support/urlApi'
 import swal from 'sweetalert'
-import queryString from 'query-string';
+
 import Currency from 'react-currency-formatter'
 import {connect} from 'react-redux'
 import PageNotFound from '../pageNotFound'
 import {withRouter} from 'react-router-dom'
 
-class ManageTransaction2 extends React.Component {
+class ManageTransaction extends React.Component {
     state = {
        searchKey : '',
         data: {
@@ -67,36 +67,6 @@ class ManageTransaction2 extends React.Component {
        
         
     }
-
-
-    getLink = () => {
-        let params = queryString.parse(this.props.location.search);
-        var newLink = `/transaction/search`
-        var link = []
-        if (params.u) {
-            link.push({
-                params: 'u',
-                value: params.u
-            })
-        }
-        if (params.m) {
-
-            link.push({
-                params: 'm',
-                value: params.m
-            })
-        }
-        
-        for (var i = 0; i < link.length; i++) {
-            if (i === 0) {
-                newLink += '?' + link[i].params + '=' + link[i].value
-            } else {
-                newLink += '&' + link[i].params + '=' + link[i].value
-            }
-        }
-       
-        return newLink+'&s=1'
-    }
     componentDidMount() {
         if(this.props.linkUrl){         
             this.getTransaction(this.props.linkUrl)
@@ -116,12 +86,6 @@ class ManageTransaction2 extends React.Component {
 
         }   
         }
-
-    
-
-
-
-
 
     mapData = (data) => {
         var newData = { ...this.state.data }
@@ -206,4 +170,4 @@ const mapStateToProps=(state)=>{
     }
 }
 
-export default withRouter(connect(mapStateToProps)(ManageTransaction2))
+export default withRouter(connect(mapStateToProps)(ManageTransaction))

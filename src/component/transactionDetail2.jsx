@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+
 import Currency from 'react-currency-formatter'
 import { urlApi } from '../support/urlApi';
 import Axios from 'axios';
@@ -8,16 +8,22 @@ import Swal from 'sweetalert2'
 import Countdown from 'react-countdown-now';
 import '../support/css/transactionDetail.css'
 import { connect } from 'react-redux'
-
+import { MDBContainer, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader} from 'mdbreact';
 // const Completionist = () => <span>You are good to go!</span>;
 
 class TransactionDetail extends React.Component {
-    state = { transactionDetail: [], addressMethod: {}, selectedFile: null }
+    state = { transactionDetail: [], addressMethod: {}, selectedFile: null, modal: false }
 
     componentDidMount() {
         this.getTransactionDetail()
         this.getAddressDetail()
     }
+    toggle = () => {
+        this.setState({
+            modal: !this.state.modal
+        });
+    }
+
     valueHandler = () => {
 
         var value = this.state.selectedFile ? this.state.selectedFile.name : 'PICK A PICTURE'
@@ -59,7 +65,7 @@ class TransactionDetail extends React.Component {
         var data = this.state.transactionDetail.map((val) => {
             return (
                 <tr>
-                    <td><img src={urlApi + '/' + val.product_image} style={{ width: '100px', height: '100px' }}></img></td>
+                    <td><img src={urlApi + '/' + val.product_image} alt='product' style={{ width: '100px', height: '100px' }}></img></td>
                     <td style={{ float: 'left' }}>{val.name}</td>
                     <td>{val.qty}</td>
                     <td><Currency quantity={val.total} currency="IDR" /></td>
@@ -107,16 +113,40 @@ class TransactionDetail extends React.Component {
 
         }
     }
-
-    cancelPayment = (id) => {
-        // alert(id)
+    wrongPicture=()=>{
+        var id = this.props.match.params.id
         Swal.fire({
             title: 'Please wait',
             onOpen: () => {
                 Swal.showLoading()
             }
         })
-        Axios.put(urlApi + '/transaction/cancel/' + id)
+        Axios.put(urlApi + '/transaction/wrongpicture/' + id)
+            .then((res) => {
+                if (res.data.error) {
+                    Swal.close()
+                    Swal.fire("Error", res.data.msg, "error")
+                } else {
+                    Swal.close()
+                    Swal.fire("Success", "Payment Canceled", "success")
+                        .then((value) => {
+                            this.props.history.push('/transaction')
+                        });
+
+                }
+            })
+
+    }
+    cancelPayment = () => {
+        // alert(id)
+        var id = this.props.match.params.id
+        Swal.fire({
+            title: 'Please wait',
+            onOpen: () => {
+                Swal.showLoading()
+            }
+        })
+        Axios.get(urlApi + '/transaction/cancel/' + id)
             .then((res) => {
                 if (res.data.error) {
                     Swal.close()
@@ -160,7 +190,7 @@ class TransactionDetail extends React.Component {
         var ms = d.getTime();
         return ms - Date.now();
     }
-    
+
     render() {
         var { id, total, address, province_name, postal_code, urban, sub_district, payment_picture, city, account_name, account_number, bank_pict, status, payment_due } = this.state.addressMethod
         return (
@@ -215,25 +245,25 @@ class TransactionDetail extends React.Component {
 
                             </div>
                             <div className="col-md-6">
-                                
+
                                 <p>{account_name}</p>
                                 <p>{account_number} </p>
                             </div>
                         </div>
                         {
-                            status===1 ?
-                            <p>Payment Due : {payment_due}</p>
-                            : null
+                            status === 1 ?
+                                <p>Payment Due : {payment_due}</p>
+                                : null
                         }
                         <hr></hr>
                         <h5>PROOF OF PAYMENT</h5>
                         {
-                            status===1?
-                            
-                            <h5 style={{color:'red'}}>Time Left : <Countdown date={Date.now() + this.getTimes()}>
-                                {/* <Completionist /> */}
-                            </Countdown>
-                            </h5> :null
+                            status === 1 ?
+
+                                <h5 style={{ color: 'red' }}>Time Left : <Countdown date={Date.now() + this.getTimes()}>
+                                    {/* <Completionist /> */}
+                                </Countdown>
+                                </h5> : null
                         }
                         <div>
                             {
@@ -255,7 +285,7 @@ class TransactionDetail extends React.Component {
                                         <p>The user has not uploaded an image</p>
                                         :
                                         <center>
-                                            <a href={urlApi + '/' + payment_picture} target="_blank" rel="noopener noreferrer" title={'Click to enlarge picture'}> <img src={urlApi + '/' + payment_picture} className='payment-proof'></img></a>
+                                            <a href={urlApi + '/' + payment_picture}  target="_blank" rel="noopener noreferrer" title={'Click to enlarge picture'}> <img alt='payment' src={urlApi + '/' + payment_picture} className='payment-proof'></img></a>
                                         </center>
                             }
                             {
@@ -263,7 +293,7 @@ class TransactionDetail extends React.Component {
                                     <div style={{ marginBottom: '20px' }}>
                                         <center>
                                             <input type="button" className='tombol' value="CONFIRM PAYMENT" onClick={() => this.confirmPayment(id)} />
-                                            <input type="button" className='tombol-black' value="DECLINE PAYMENT" onClick={() => this.cancelPayment(id)} style={{ marginLeft: '20px' }} />
+                                            <input type="button" className='tombol-black' value="DECLINE PAYMENT" onClick={this.toggle} style={{ marginLeft: '20px' }} />
                                         </center>
                                     </div>
                                     : null
@@ -272,8 +302,21 @@ class TransactionDetail extends React.Component {
                         </div>
                     </div>
                 </div>
+                { this.state.modal ?
+                <MDBContainer>
+              
+                <MDBModal isOpen={this.state.modal} toggle={this.toggle}>
+                    <MDBModalHeader toggle={this.toggle}>Decline Payment</MDBModalHeader>
+                    <MDBModalBody>
+                        <MDBBtn color="secondary" onClick={this.cancelPayment}>salah tf</MDBBtn>
+                        <MDBBtn color="primary" onClick={this.wrongPicture}>gambar ga jelas</MDBBtn>
+                    </MDBModalBody>
 
+                </MDBModal>
+            </MDBContainer>
+                : null
 
+                }
             </div>
         )
     }

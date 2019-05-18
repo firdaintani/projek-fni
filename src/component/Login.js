@@ -63,12 +63,8 @@ class Login extends React.Component{
                     <input type="password" className="form-border outline-none" placeholder="Password" ref='password'/>
                 </div>
                 
-                {this.renderBtnOrLoading()}
-              
-                <p style={{textAlign:"center"}}>OR</p>
-                    
+                {this.renderBtnOrLoading()}  
              
-                <input type="button" className="tombol" value='LOGIN WITH GOOGLE' style={{width:'100%'}}></input><br></br>
                 {this.renderErrorMessege()}
                 <Link to='/register'><small  className='form-text text-muted'  style={{marginTop:'10px'}}>Dont have an account?Click here</small></Link>
                 

@@ -2,7 +2,7 @@ import React from 'react';
 import { slide as Menu } from 'react-burger-menu';
 import {Link} from 'react-router-dom'
 import {connect} from 'react-redux'
-import { MDBBtn, MDBCollapse } from "mdbreact";
+import { MDBCollapse } from "mdbreact";
 
 class SlideMenu extends React.Component {
     
@@ -12,22 +12,27 @@ class SlideMenu extends React.Component {
 
     
         toggleCollapse = collapseID => () => {
-          if(this.state.collapseID){
-          this.refs.collapsemd.className='display-collapse'
-        }else{
-          this.refs.collapsemd.className=''
-                }
           this.setState(prevState => ({
-            collapseID: prevState.collapseID !== collapseID ? collapseID : ""
+              collapseID: prevState.collapseID !== collapseID ? collapseID : ""
           }));
-        }
-        
+      }
     
       // This keeps your state in sync with the opening/closing of the menu
       // via the default means, e.g. clicking the X, pressing the ESC key etc.
       handleStateChange (state) {
         this.setState({menuOpen: state.isOpen})  
       }
+      
+
+    toggle = () => {
+
+
+      this.setState({
+          menuOpen: !this.state.menuOpen
+          , collapseID: ""
+      });
+
+  }
       
       // This can be used to close the menu, e.g. when a user clicks a menu item
       closeMenu () {
@@ -41,9 +46,6 @@ class SlideMenu extends React.Component {
         this.setState({menuOpen: !this.state.menuOpen})
       }
 
-      // toggleCollapse () {
-      //   this.setState({menuCollapse: !this.state.menuCollapse})
-      // }
     render(){
 
     return (
@@ -55,31 +57,24 @@ class SlideMenu extends React.Component {
           <Link className="menu-item outline-none" to='/product/all' onClick={() => this.closeMenu()}>
         Shop
         </Link>
-        <Link className="menu-item outline-none" to='/profile' onClick={() => this.closeMenu()}>
-        Profile
-        </Link>
         {
           this.props.role==='admin' ? 
-          <Link className="menu-item outline-none" to='/manage-product' onClick={() => this.closeMenu()}>
-        Manage Product Category
-        </Link> : null
+          <div>
+          <p onClick={this.toggleCollapse("basicCollapse")} style={{ cursor: 'pointer' }} className='menu-item'>Manage &nbsp;&nbsp;&nbsp; <i class="fas fa-angle-down"></i></p>
+          <MDBCollapse id="basicCollapse" isOpen={this.state.collapseID}>
+              <ul>
+                  <Link to='/manage-product'><li className='menu-item' onClick={this.toggle}>Manage Product</li></Link>
+                  <Link to='/manage-category'><li className='menu-item' onClick={this.toggle}>Manage Category</li></Link>
+                  <Link to='/manage-brand'><li className='menu-item' onClick={this.toggle}>Manage Brand</li></Link>
+                  <Link to='/transaction'><li className='menu-item' onClick={this.toggle}>Manage Transaction</li></Link>
+
+              </ul>
+          </MDBCollapse>
+      </div> : this.props.role==='user' ?
+      <div>
+          <Link to='/transaction' ><p className='menu-item outline-none' onClick={this.toggle}>Transaction</p></Link>
+      </div> : null
         }
-        
-        <MDBBtn color="info" onClick={this.toggleCollapse("basicCollapse")} style={{ marginBottom: "1rem" }}>
-          Toggle2
-        </MDBBtn>
-      
-        <MDBCollapse id="basicCollapse"  isOpen={this.state.collapseID} ref='collapsemd' >
-          <p>
-              {this.state.collapseID}
-            Anim pariatur cliche reprehenderit, enim eiusmod high life
-            accusamus terry richardson ad squid. Nihil anim keffiyeh
-            helvetica, craft beer labore wes anderson cred nesciunt sapiente
-            ea proident.
-          </p>
-        </MDBCollapse>
-        
-        {/* {this.state.username} */}
         
       </Menu>
       {/* <CustomIcon onClick={() => this.toggleMenu()} /> */}

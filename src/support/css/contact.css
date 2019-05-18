@@ -1,9 +1,9 @@
 .link-text:hover{
-    text-decoration: underline !important;
-    color: blue;
+    text-decoration: none !important;
+    color: grey !important;
     cursor: pointer !important;
 }
-.link-text{
+/* .link-text{
     color: black;
     text-decoration: none;
-}
+} */

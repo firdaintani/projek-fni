@@ -3,7 +3,6 @@ import cookie from 'universal-cookie'
 import {urlApi} from '../support/urlApi'
 import swal from "sweetalert";
 import swal2 from 'sweetalert2'
-import { BrowserRouter} from 'react-router-dom';
 
 
 var objCookie = new cookie()

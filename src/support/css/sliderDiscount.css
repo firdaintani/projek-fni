@@ -1,0 +1,20 @@
+.discount-triangle-onslider{
+    position: absolute;
+    top: 46px;
+    right: 22px;
+    width: 0;
+	height: 0;
+	border-top: 30px solid #F26241;
+	border-right: 30px solid #F26241;
+	border-bottom: 30px solid transparent;
+    border-left: 30px solid transparent;
+}
+
+.border-brand-onslider{
+    border-bottom: 2px solid #606060;
+   
+    width: 85% !important;
+  text-align: center;
+    margin-top: 20px;
+  
+}

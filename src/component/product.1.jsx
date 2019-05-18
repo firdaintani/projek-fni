@@ -1,14 +1,10 @@
 import React from 'react'
-// import { Link } from 'react-router-dom'
 import Loader from 'react-loader-spinner'
 import ProductList from './productList'
 import queryString from 'query-string';
 import '../support/css/product.css';
 import '../support/css/productList.css'
-
 import { withRouter } from 'react-router-dom'
-
-import Currency from 'react-currency-formatter';
 import Axios from 'axios';
 import { urlApi } from '../support/urlApi';
 import swal from 'sweetalert';
@@ -95,55 +91,47 @@ class Product extends React.Component {
         var link = []
         if (params.key) {
             link.push({
-                params: 'key',
-                value: params.key
+                params: 'key='+params.key
             })
         }
         if (params.category) {
 
             link.push({
-                params: 'category',
-                value: params.category
+                params: 'category='+params.category
             })
         }
         if (params.brand) {
             link.push({
-                params: 'brand',
-                value: params.brand
+                params: 'brand='+params.brand
             })
         }
         if (params.price_min) {
 
             link.push({
-                params: 'price_min',
-                value: params.price_min
+                params: 'price_min='+params.price_min
             })
 
         }
         if (params.price_max) {
 
             link.push({
-                params: 'price_max',
-                value: params.price_max
+                params: 'price_max='+params.price_max
             })
 
         }
         if (params.sortby) {
             link.push({
-                params: 'sortby',
-                value: params.sortby
+                params: 'sortby='+params.sortby
             })
         }
 
         for (var i = 0; i < link.length; i++) {
             if (i === 0) {
-                newLink += '?' + link[i].params + '=' + link[i].value
+                newLink += '?' + link[i].params
             } else {
-                newLink += '&' + link[i].params + '=' + link[i].value
+                newLink += '&' + link[i].params
             }
         }
-        //   this.props.history.push(newLink)
-        //   alert(urlApi+newLink)
         return newLink
     }
 
@@ -155,50 +143,44 @@ class Product extends React.Component {
         var price_max = this.refs.priceMax.value
 
         var sortby = this.refs.sortOption.value
-        // alert(sortby)
+       
         var newLink = `/product/search`
         var params = []
         if (searchKeyword) {
             params.push({
-                params: 'key',
-                value: searchKeyword
+                params: 'key='+searchKeyword
             })
         }
         if (category_id > 0) {
             params.push({
-                params: 'category',
-                value: category_id
+                params: 'category='+category_id
             })
         }
         if (brand_id > 0) {
             params.push({
-                params: 'brand',
-                value: brand_id
+                params: 'brand='+brand_id
             })
         }
         if (price_min) {
             params.push({
-                params: 'price_min',
-                value: price_min
+                params: 'price_min='+price_min
             })
         }
         if (price_max) {
             params.push({
-                params: 'price_max',
-                value: price_max
+                params: 'price_max='+price_max
             })
         }
         if (sortby !== 'none') {
             params.push({
-                params: 'sortby',
-                value: sortby
+                params: 'sortby='+sortby
             })
         }
         for (var i = 0; i < params.length; i++) {
             if (i === 0) {
-                newLink += '?' + params[i].params + '=' + params[i].value
+                newLink += '?' + params[i].params 
             } else {
-                newLink += '&' + params[i].params + '=' + params[i].value
+                newLink += '&' + params[i].params 
             }
         }
 

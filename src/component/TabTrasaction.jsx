@@ -8,108 +8,11 @@ import { connect } from 'react-redux'
 import OnProcessTransaction from './onProcessTransaction'
 import cookie from 'universal-cookie'
 import PageNotFound from './pageNotFound';
-import Axios from 'axios';
-import { urlApi } from '../support/urlApi';
-import Swal from 'sweetalert2'
-import queryString from 'query-string';
+
 const objCookie = new cookie()
 
 class TabTransaction extends React.Component {
     state = {data : [], searchKey:'' ,  activeTab: '1'}
-    componentDidMount(){
-        
-        this.getData()
-
-    }
-    getLink = () => {
-        let params = queryString.parse(this.props.location.search);
-        var newLink = `/transaction/search`
-        var link = []
-        if (params.u) {
-            link.push({
-                params: 'u',
-                value: params.u
-            })
-        }
-        if (params.m) {
-
-            link.push({
-                params: 'm',
-                value: params.m
-            })
-        }
-        
-        for (var i = 0; i < link.length; i++) {
-            if (i === 0) {
-                newLink += '?' + link[i].params + '=' + link[i].value
-            } else {
-                newLink += '&' + link[i].params + '=' + link[i].value
-            }
-        }
-        this.setState({searchKey:newLink, activeTab:'1'})
-        return newLink
-    }
-
-    getData=()=>{
-        if(this.props.location.search){
-        
-            var link = this.getLink()
-            if(this.props.role==='user'){
-                link+='&u='+this.props.username
-            }
-
-            
-            Axios.get(urlApi+link)
-            .then((res) => {
-                if (res.data.error) {
-                    Swal.fire("Error", res.data.msg, "error")
-                } else {
-                    alert(res.data.length)
-                    this.setState({data : res.data})
-                }
-            })
-            .catch((err) => console.log(err))
-        }else{
-        if(this.props.role==='admin'){
-            if(this.state.activeTab==='1'){
-            Axios.get(urlApi + '/transaction/all')
-            .then((res) => {
-                if (res.data.error) {
-                    Swal.fire("Error", res.data.msg, "error")
-                } else {
-                    alert(res.data.length)
-                    this.setState({data : res.data})
-                }
-            })
-            .catch((err) => console.log(err))
-            }else if(this.state.activeTab==='2'){
-                Axios.get(urlApi + '/transaction/onprocessall')
-                .then((res) => {
-                    if (res.data.error) {
-                        Swal.fire("Error", res.data.msg, "error")
-                    } else {
-                        this.setState({ data: res.data })
-                    }
-                })
-                .catch((err) => console.log(err))
-            }else {
-                Axios.get(urlApi + '/transaction/finished')
-                .then((res) => {
-                    if (res.data.error) {
-                        Swal.fire("Error", res.data.msg, "error")
-                    } else {
-                        // alert('masuk')
-                        this.setState({ data: res.data })
-                    }
-                })
-                .catch((err) => console.log(err))
-
-            }
-        }
-    }
-    }
-  
-
     toggle(tab) {
         if (this.state.activeTab !== tab) {
             this.setState({
@@ -119,55 +22,22 @@ class TabTransaction extends React.Component {
     }
     
 
-    pushUrl = () => {
-        if(this.props.role==='admin'){
-            var username = this.refs.username.value
-
-        }
-        var selectMonth = this.refs.selectMonth.value
-        // alert(sortby)
-        var newLink = `/transaction/search`
-        var params = []
-        if (username) {
-            params.push({
-                params: 'u',
-                value: username
-            })
-        }
-        if (selectMonth > 0) {
-            params.push({
-                params: 'm',
-                value: selectMonth
-            })
-        }
-        for (var i = 0; i < params.length; i++) {
-            if (i === 0) {
-                newLink += '?' + params[i].params + '=' + params[i].value
-            } else {
-                newLink += '&' + params[i].params + '=' + params[i].value
-            }
-        }
-
+    pushUrl = () => {     
+        var newLink = `/transaction/search?m=${this.refs.selectMonth.value}`
+      
         this.props.history.push(newLink)
-        this.setState({ searchKey: newLink, activeTab:'1' })
-        return newLink
+        this.setState({ searchKey: newLink})
+        
        
     }
 
     filterBtn=()=>{
-       var link = this.pushUrl()
+    if( this.refs.selectMonth.value >0)
+       this.pushUrl()
+       else{
+           this.props.history.push('/transaction')
+       }
       
-       Axios.get(urlApi+link)
-       .then((res) => {
-           if (res.data.error) {
-               Swal.fire("Error", res.data.msg, "error")
-           } else {
-               alert(res.data.length)
-               this.setState({data : res.data})
-           }
-       })
-       .catch((err) => console.log(err))
-   
     }
 
     displayMonth = () => {
@@ -175,7 +45,7 @@ class TabTransaction extends React.Component {
             <div className="col-md-2">
 
                 <select className='form-control' ref='selectMonth'>
-                    <option hidden >Month</option>
+                    <option value={0} >All</option>
                     <option value={1}>January</option>
                     <option value={2}>February</option>
                     <option value={3}>March</option>
@@ -200,17 +70,8 @@ class TabTransaction extends React.Component {
         return (
             <div className='container' style={{ marginTop: '80px' }}>
                 <div style={{ marginBottom: '20px' }}>
-                    {
-                        this.props.role==='admin' ?
-
-                        <input type='text' className='form-control' ref='username' placeholder='username' style={{width:'160px'}}/>
-                        : null
-                    }
-                    
                     <p className='mt-3'>Filter by month :</p>
                     <div className="row">
-                       
-                       
                         {this.displayMonth()}
                         <div className="col-md-2">
                             <input type="button" className='tombol-black' value='FILTER' onClick={this.filterBtn} />
@@ -248,8 +109,7 @@ class TabTransaction extends React.Component {
                     <TabPane tabId="1">
                         <Row>
                             <Col sm="12">
-                                {/* <h4>Tab 1 Contents</h4> */}
-                                {
+                         
                                     this.props.role === 'admin' && this.state.activeTab === '1' ?
                                         <ManageTransaction linkUrl={this.state.searchKey}/> : this.props.role === 'user' && this.state.activeTab === '1' ?
                                             <Transaction linkUrl={this.state.searchKey} /> : null
@@ -262,7 +122,7 @@ class TabTransaction extends React.Component {
                             <Col sm="12">
                                 {
                                     this.state.activeTab === '2' ?
-                                        <OnProcessTransaction dataTransaction={this.state.data}/> : null
+                                        <OnProcessTransaction linkUrl={this.state.searchKey} /> : null
                                 }
 
                             </Col>
@@ -273,7 +133,7 @@ class TabTransaction extends React.Component {
                             <Col sm="12">
                                 {
                                     this.state.activeTab === '3' ?
-                                        <FinishedTransaction dataTransaction={this.state.data} />
+                                        <FinishedTransaction linkUrl={this.state.searchKey} /> 
                                         : null
                                 }
 

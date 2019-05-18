@@ -20,7 +20,8 @@ import { keepLogin, cookieChecked , countCart} from './1. action'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import Loader from 'react-loader-spinner'
-import SlideMenu2 from './component/slidemenu2.jsx'
+
+import SlideMenu from './component/slideMenu'
 // import Transaction from './component/transaction'
 import TransactionDetail from './component/transactionDetail2'
 import ManageTransaction from './component/admin/manageTransaction'
@@ -54,7 +55,7 @@ class App extends Component {
       return (
         <div>
           <div style={{ position: 'fixed', width: '100%', top: 0, zIndex: 100 }}>
-          <SlideMenu2 />
+          <SlideMenu />
             <Navbar />
           </div>
 

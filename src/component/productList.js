@@ -20,15 +20,12 @@ import {urlApi} from '../support/urlApi'
         var jsx = this.state.product.map((val) => {
             return (
                 <div className="card col-md-3 mr-5 mt-3 border-card" onClick={()=>this.toProdDetail(val.id)}>
-                <p style={{textAlign:'center',marginTop:'20px'}} className='border-brand'>{val.brand_name}</p>
+                <p className='border-brand'>{val.brand_name}</p>
                {
                    val.stock===0 ?
                    <div class="overlay-pict">
-                   <img title={val.name} className="card-img-top gambar-list" src={urlApi+'/'+val.product_image} alt="Card" />
-
-                  {/* <div class="overlay-pict"> */}
+                   <img title={val.name} className="card-img-top gambar-list" src={urlApi+'/'+val.product_image} alt="Card" /> 
                   <div class="overlay-text">Out of Stock</div>
-              {/* </div> */}
               </div>
                 :
                
@@ -50,16 +47,6 @@ import {urlApi} from '../support/urlApi'
                     <div>
                     <h4  style={{fontSize:'17px',textAlign:'center',height:'auto'}}>{val.name}</h4></div>
                     <p style={{fontWeight:'500', textAlign:'center', paddingTop:'5px'}}><Currency quantity={val.price - (val.price*(val.discount/100))} currency="IDR" /></p>
-                    {/* {
-                        val.discount > 0 ?
-                        <p className="card-text" style={{textDecoration:'line-through',color:'red',display:'inline'}}><Currency quantity={val.price} currency="IDR"/>
-                        </p>
-                        : null
-                    } */}
-                    {/* <p style={{textAlign:'center', paddingTop:'10px',fontWeight:'500'}}>
-                    <Currency quantity={val.price} currency="IDR"/>
-                    </p> */}
-                    {/* <Link to={'/product-detail/' + val.id}><input type='button' className='tombol' value='Add To Cart' /></Link> */}
                     </div>
                 </div>
             )

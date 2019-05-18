@@ -23,19 +23,9 @@ class Register extends React.Component{
 
             this.setState({message:''})
           
-           
-            // if(this.props.registered){
-                // this.refs.reg_conf_password.value=''
-                // this.refs.reg_password.value=''
-                // this.refs.reg_name.value=''
-                // this.refs.reg_email.value=''
-                // this.refs.reg_phone.value=''
-                // this.refs.reg_username.value=''
-                // this.props.history.push('/verify');
-
-            // }
+        
         }else{
-            // alert('beda')
+          
             this.setState({message:'Password not same'})
         }
     }
@@ -74,7 +64,7 @@ class Register extends React.Component{
             <form style={{marginRight:'300px', marginLeft:'300px'}}>
             <div className="form-group">
                  <label htmlFor="exampleInputEmail1">Name</label><br></br>
-                 <input type="text" className="form-border outline-none" placeholder="Enter Your Name" ref='reg_name' />
+                 <input type="text" className="form-border outline-none" placeholder="Enter Your Full Name" ref='reg_name' />
                </div>
              <div className="form-group">
                  <label htmlFor="exampleInputEmail1">Email address</label><br></br>
@@ -99,15 +89,9 @@ class Register extends React.Component{
                  <input type="password" className="form-border outline-none" placeholder="Confirm Password" ref='reg_conf_password' />
              </div>
                
-             {/* <div className="form-check">
-                 <input type="checkbox" className="form-check-input" id="exampleCheck1" />
-                 <label className="form-check-label" htmlFor="exampleCheck1">Check me out</label>
-             </div> */}
              {/* {this.renderBtnOrLoading()} */}
-              <input type="button" className="tombol" value='REGISTER' style={{marginTop:'20px'}} onClick={this.registerBtn}></input>
+              <input type="button" className="tombol" value='REGISTER' style={{marginTop:'20px', width:'100%'}} onClick={this.registerBtn}></input>
              
-              OR  &nbsp;
-             <input type="button" className="tombol" value='REGISTER WITH GOOGLE' style={{marginTop:'20px'}}></input><br></br>
              {this.renderErrorMessege()}
              <Link to='/login'> <small className='form-text text-muted' style={{marginTop:'10px'}}>Already have an account?Click here</small></Link>
              </form>

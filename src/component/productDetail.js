@@ -69,7 +69,7 @@ class ProductDetail extends React.Component{
     
         } 
         else{
-            swal("Error","You need to login!", "error")
+            swal("Warning!","You need to login!", "warning")
             .then((willLogin) => {
                 if (willLogin) {
                
@@ -114,7 +114,6 @@ class ProductDetail extends React.Component{
                        <div className='col-5'>
                             <div className='row'>
                                 <div className='col-3'>
-                                {/* <input type="button" value='-' onClick={this.kurang} style={{marginTop:'10px'}}></input> */}
                                 <i class="fas fa-minus" onClick={this.kurang} style={{cursor:'pointer'}}></i>
                                 </div>
                                 <div className='col-6' style={{textAlign:"center",marginLeft:'-30px'}} >

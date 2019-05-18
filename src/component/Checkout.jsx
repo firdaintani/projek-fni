@@ -204,8 +204,11 @@ class Checkout extends React.Component {
             .catch((err) => console.log(err))
     }
     renderCart = () => {
-        var data = this.state.productCart.map((val) => {
-            if (val.stock > 0) {
+        var dataCart = this.state.productCart.filter((val)=>{
+            return val.stock>0
+        })
+        var data = dataCart.map((val) => {
+            // if (val.stock > 0) {
                 return (
                     <tr>
                         <td>
@@ -230,7 +233,8 @@ class Checkout extends React.Component {
                     </tr>
                 )
 
-            }
+            // }
+            
         })
         return data
     }
@@ -256,7 +260,7 @@ class Checkout extends React.Component {
                         <label>
                         <div className='row' style={{ width: '600px', alignSelf: 'center', marginLeft:'10px' }}>
                             <div className="col-md-6">
-                                <img src={val.bank_pict} style={{ width: '200px' }} />
+                                <img src={val.bank_pict} style={{ width: '200px' }} alt='' />
 
                             </div>
                             <div className="col-md-6" style={{ alignItems: 'center' }}>

@@ -11,44 +11,46 @@ import {withRouter} from 'react-router-dom'
 
 const objCookie = new cookie()
 class Transaction extends React.Component {
-    state = { transactionList: [], openDetail: false }
+    state = { transaction: [] , searchKey : ''}
     
-    // componentDidMount(){
-    //     this.getDataTransaction()
-    // }
+  
 
-    componentDidMount(){
-        alert('masuk')
-        if(this.props.dataTransaction)
-       this.setState({transactionList:this.props.dataTransaction})
-       
-    }
+    componentDidMount() {
+        if(this.props.linkUrl){         
+            this.getTransaction(this.props.linkUrl+'&s=1&u='+this.props.username)
+        }else{
+            this.getTransaction('/transaction/search?s=1&u='+this.props.username)
+
+        }   
+     }
+  
 
     componentWillReceiveProps(newProps){
-
-        this.setState({transactionList:newProps.dataTransaction})
+           if(newProps.linkUrl){
+        
+            this.getTransaction(newProps.linkUrl+'&s=1&u='+this.props.username)
+        }else{
+            this.getTransaction('/transaction/search?s=1&u='+this.props.username)
+        }   
         }
 
-    // getDataTransaction=()=>{
-    //     alert(this.props.linkUrl)
-    //     if(this.props.location.search){
-    //         alert(this.props.linkUrl)
-    //     }else{
-    //         Axios.get(urlApi+'/transaction/data?username='+this.props.username)
-    //         .then((res)=>{
-    //             if(res.data.error){
-    //                 swal("Error", res.data.msg, "error")
-    //             }else{
-    //                 this.setState({transactionList: res.data})
-    //             }
-    //         })
-    //         .catch((err)=>console.log(err))
+    getTransaction=(link)=>{
+       
+            Axios.get(urlApi+link)
+            .then((res)=>{
+                if(res.data.error){
+                    swal("Error", res.data.msg, "error")
+                }else{
+                    this.setState({transaction: res.data})
+                }
+            })
+            .catch((err)=>console.log(err))
     
-    //     }
-    // }
+       
+    }
     
     renderTransaction = () => {
-        var data = this.state.transactionList.map((val) => {
+        var data = this.state.transaction.map((val) => {
            
             return (
                 <tr>
@@ -70,29 +72,33 @@ class Transaction extends React.Component {
         }
         return (
             <div className="container font" style={{ marginTop: '20px' }}>
-                <center>
+               {
+                   this.state.transaction.length>0 ? 
+                   <center>
 
-                    <table className='table'>
+                   <table className='table'>
 
-                        <thead style={{ textAlign: 'center' }}>
+                       <thead style={{ textAlign: 'center' }}>
 
-                            <td>Order ID</td>
-                            <td>Order Date</td>
-                            <td>Total Payment</td>
-                            <td>Payment Due</td>
-                            
-                            <td></td>
-                            {/* <td></td> */}
-                        </thead>
-                        <tbody style={{ textAlign: 'center' }}>
+                           <td>Order ID</td>
+                           <td>Order Date</td>
+                           <td>Total Payment</td>
+                           <td>Payment Due</td>
+                           
+                           <td></td>
+                           {/* <td></td> */}
+                       </thead>
+                       <tbody style={{ textAlign: 'center' }}>
 
-                            {this.renderTransaction()}
+                           {this.renderTransaction()}
 
-                        </tbody>
+                       </tbody>
 
-                    </table>
+                   </table>
 
-                </center>
+               </center>
+                   : <h4>Transaction Empty</h4>
+               }
             </div>
         )
     }

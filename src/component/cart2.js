@@ -2,16 +2,16 @@ import React from 'react'
 import {Link} from 'react-router-dom'
 import '../support/css/cart.css'
 import Currency from 'react-currency-formatter';
-import swal from 'sweetalert'
+
 import {connect} from 'react-redux'
 import Axios from 'axios';
 import { urlApi } from '../support/urlApi';
 import {countCart} from '../1. action'
-import Swal2 from 'sweetalert2'
+import swal from 'sweetalert2'
 import Loader from 'react-loader-spinner'
 
 class Cart extends React.Component{
-    state ={category : '',selectedId:-1,qty:0, productCart:[], getData : false}
+    state ={category : '',selectedId:-1,qty:0, productCart:[], getData : false, stockItem : 0}
       
     componentDidMount(){
         this.getDataCart()
@@ -23,7 +23,7 @@ class Cart extends React.Component{
         Axios.get(urlApi+'/cart/data?username='+this.props.username)
         .then((res)=>{
             if(res.data.error){
-                swal("Error", res.data.msg, "error")
+                swal.fire("Error", res.data.msg, "error")
             }else{
                 this.setState({productCart : res.data, getData: true})
             }
@@ -37,12 +37,18 @@ class Cart extends React.Component{
         }
     }
     tambah=()=>{
-        this.setState({qty:this.state.qty+1})
+      
+         if(this.state.qty===this.state.stockItem){
+            swal.fire("Warning", "Quantity must not over the stock", "warning")
+        }else{
+            this.setState({qty:this.state.qty+1})
+            
+        }
     }
     
-    editBtn=(id, qty)=>{
+    editBtn=(id, qty, stockItem)=>{
        
-        this.setState({selectedId: id, qty:qty})
+        this.setState({selectedId: id, qty:qty, stockItem: stockItem})
     }
 
     deleteBtn=(id)=>{
@@ -79,46 +85,19 @@ class Cart extends React.Component{
      
     }
 
-    // checkoutBtn=()=>{
-    //     // alert('checkout')
-    //     Swal2.fire({
-    //         title:'Please wait', 
-    //         onOpen :() =>{
-    //             Swal2.showLoading()
-    //         }
-    //     })
-        
-    //     Axios.post(urlApi+'/cart/checkout', {username : this.props.username, total : this.getTotal()})
-    //     .then((res)=>{
-    //         if(res.data.error){
-    //             Swal2.close()
-    //             swal("Error", res.data.msg, "error")
-    //         }else{
-    //             Swal2.close()
-    //             swal("Success", "Checkout success", "success")
-    //             this.getDataCart()
-    //             this.props.countCart(this.props.username)
-
-    //         }
-    //     })
-    //     .catch((err)=>console.log(err))
-    // }
-
     saveBtn=(id)=>{
-        // alert(val.name + 'disimpan')
+        
         Axios.put(urlApi+'/cart/edit/'+id, {quantity : this.state.qty, username : this.props.username})
         .then((res)=>{
             if(res.data.error){
-                swal("Error", res.data.msg,"error")
+                swal.fire("Error", res.data.msg,"error")
             }
             else{
                 this.setState({productCart: res.data})
-                swal("Success", "Update success", "success")
+                swal.fire("Success", "Update success", "success")
                 this.cancelBtn()
             }
         })
-        // this.setState({})
-        // this.cancelBtn()
     }
 
     cancelBtn=()=>{
@@ -140,6 +119,7 @@ class Cart extends React.Component{
     
                                 {
                                     this.state.selectedId===val.id ? 
+                                    <div>
                                     <div className='row'>
                                     <div className='col-3'>
                                         <i class="fas fa-minus" onClick={this.kurang} style={{cursor:'pointer'}}></i>
@@ -152,7 +132,15 @@ class Cart extends React.Component{
                                         <i class="fas fa-plus" onClick={this.tambah} style={{cursor:'pointer', marginRight:'10px'}}></i>
                                         x <Currency quantity={val.price-(val.price*(val.discount/100))} currency="IDR"/>
                                     </div>
+                                    
                                     </div>
+                                    <div className='row'>
+                                    <div className='col'>
+                                    Available stock : {val.stock}
+                                    </div>
+                                    </div>
+                                    </div>
+                                    
                                     :  <p>{val.quantity} x <span> <Currency quantity={val.price-(val.price*(val.discount/100))} currency="IDR"/></span> </p>
                             
                                 }                        
@@ -170,7 +158,7 @@ class Cart extends React.Component{
                         </td>
                                 
                         : <td >
-                        <p className='edit-button' onClick={()=>this.editBtn(val.id, val.quantity)}>Edit</p>
+                        <p className='edit-button' onClick={()=>this.editBtn(val.id, val.quantity, val.stock)}>Edit</p>
                         <p style={{float:"right"}} ><Currency quantity={val.quantity*(val.price-(val.price*(val.discount/100)))} currency="IDR"/><i class="fas fa-times" style={{paddingLeft:'20px', cursor:'pointer'}} onClick={()=>this.deleteBtn(val.id)}></i></p>
                         </td>
         

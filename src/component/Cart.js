@@ -2,7 +2,6 @@ import React from 'react'
 import {Link} from 'react-router-dom'
 import '../support/css/cart.css'
 import Currency from 'react-currency-formatter';
-
 import {connect} from 'react-redux'
 import Axios from 'axios';
 import { urlApi } from '../support/urlApi';
@@ -52,26 +51,27 @@ class Cart extends React.Component{
     }
 
     deleteBtn=(id)=>{
-        // alert(id+' telah dihapus')
-        swal({
+        swal.fire({
             title: "Are you sure?",
             text: "Once deleted, you will not be able to recover this product data!",
             icon: "warning",
-            buttons: true,
-            dangerMode: true,
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
           })
           .then((willDelete) => {
      
-            if (willDelete) {
+            if (willDelete.value) {
                 Axios.delete(urlApi+'/cart/delete/'+id+'?username='+this.props.username)  
                 .then((res)=>{
                     if(res.data.error){
-                        swal("Error", res.data.msg, "error")
+                        swal.fire("Error", res.data.msg, "error")
                     }else{
                         this.setState({productCart: res.data})
                         this.props.countCart(this.props.username)
 
-                        swal(`Poof! Product has been deleted!`, {
+                        swal.fire(`Poof! Product has been deleted!`, {
                             icon: "success",
                           });
                          
@@ -79,23 +79,27 @@ class Cart extends React.Component{
                     }
                 })      
             } else {
-              swal("Your product is safe!");
+              swal.fire("Your product is safe!");
             }
           });
      
     }
 
-    saveBtn=(id)=>{
-        
-        Axios.put(urlApi+'/cart/edit/'+id, {quantity : this.state.qty, username : this.props.username})
+    saveEdit=(id, qty, when)=>{
+        Axios.put(urlApi+'/cart/edit/'+id, {quantity : qty, username : this.props.username})
         .then((res)=>{
             if(res.data.error){
                 swal.fire("Error", res.data.msg,"error")
             }
             else{
+
                 this.setState({productCart: res.data})
+                if(when==='editQtyCart'){
+
+                
                 swal.fire("Success", "Update success", "success")
                 this.cancelBtn()
+            }
             }
         })
     }
@@ -106,13 +110,16 @@ class Cart extends React.Component{
 
     renderCart =()=>{
         var data = this.state.productCart.map((val)=>{
-            if(val.stock > 0) {
+            if(val.stock < val.quantity ){
+                this.saveEdit(val.id, val.stock)
+            }
+            else if(val.stock > 0) {
                 return (
-                    <tr>
+                    <tr key={val.id}>
                     <td>
                         <div className='row mb-auto mt-auto d-flex align-items-center'>
                             <div className='col-4' >
-                                <img src={urlApi+'/'+val.product_image} alt='product' style={{width:'150px', height:'150px', display:'inline'}}/>
+                                <img src={urlApi+'/'+val.product_image} alt='product'className='product-picture-cart'/>
                             </div>
                             <div className='col-7' >
                                 <p style={{fontStyle:'bold', fontSize:'20px'}}>{val.name}</p>
@@ -122,14 +129,14 @@ class Cart extends React.Component{
                                     <div>
                                     <div className='row'>
                                     <div className='col-3'>
-                                        <i class="fas fa-minus" onClick={this.kurang} style={{cursor:'pointer'}}></i>
+                                        <i className="fas fa-minus" onClick={this.kurang} style={{cursor:'pointer'}}></i>
                                     </div>
                                     <div className='col-2' style={{textAlign:"center",marginLeft:'-50px'}} >
                                         <span>{this.state.qty}</span>
         
                                     </div>
                                     <div className='col-7'>
-                                        <i class="fas fa-plus" onClick={this.tambah} style={{cursor:'pointer', marginRight:'10px'}}></i>
+                                        <i className="fas fa-plus" onClick={this.tambah} style={{cursor:'pointer', marginRight:'10px'}}></i>
                                         x <Currency quantity={val.price-(val.price*(val.discount/100))} currency="IDR"/>
                                     </div>
                                     
@@ -141,8 +148,12 @@ class Cart extends React.Component{
                                     </div>
                                     </div>
                                     
-                                    :  <p>{val.quantity} x <span> <Currency quantity={val.price-(val.price*(val.discount/100))} currency="IDR"/></span> </p>
-                            
+                                    : 
+                                    <div>
+                                    <p>{val.quantity} x <span> <Currency quantity={val.price-(val.price*(val.discount/100))} currency="IDR"/></span> </p>
+                                    Available stock : {val.stock}
+                                   
+                                    </div>
                                 }                        
                                
                             </div>
@@ -152,14 +163,14 @@ class Cart extends React.Component{
                         this.state.selectedId===val.id ?
                         <td >
                             <p>
-                            <span className='save-button' onClick={()=>this.saveBtn(val.id)}>Save</span><span className='cancel-button' onClick={this.cancelBtn}>Cancel</span>
+                            <span className='save-button' onClick={()=>this.saveEdit(val.id, this.state.qty, 'editQtyCart')}>Save</span><span className='cancel-button' onClick={this.cancelBtn}>Cancel</span>
                             </p>
                             <p style={{float:"right"}} ><Currency quantity={val.quantity*(val.price-(val.price*(val.discount/100)))} currency="IDR"/></p>
                         </td>
                                 
                         : <td >
                         <p className='edit-button' onClick={()=>this.editBtn(val.id, val.quantity, val.stock)}>Edit</p>
-                        <p style={{float:"right"}} ><Currency quantity={val.quantity*(val.price-(val.price*(val.discount/100)))} currency="IDR"/><i class="fas fa-times" style={{paddingLeft:'20px', cursor:'pointer'}} onClick={()=>this.deleteBtn(val.id)}></i></p>
+                        <p style={{float:"right"}} ><Currency quantity={val.quantity*(val.price-(val.price*(val.discount/100)))} currency="IDR"/><i className="fas fa-times" style={{paddingLeft:'20px', cursor:'pointer'}} onClick={()=>this.deleteBtn(val.id)}></i></p>
                         </td>
         
                     }
@@ -172,8 +183,8 @@ class Cart extends React.Component{
                     <td>
                         <div className='row mb-auto mt-auto d-flex align-items-center'>
                             <div className='col-4 overlay-pict-cart' >
-                                <img src={urlApi+'/'+val.product_image} alt='product' style={{width:'150px', height:'150px', display:'inline'}}/>
-                                <div class="overlay-text">Out of stock</div>
+                                <img src={urlApi+'/'+val.product_image} alt='product' className='product-picture-cart'/>
+                                <div className="overlay-text">Out of stock</div>
                             </div>
                             <div className='col-7' >
                                 <p style={{fontStyle:'bold', fontSize:'20px'}}>{val.name}</p>
@@ -182,10 +193,12 @@ class Cart extends React.Component{
                                                        
                                
                             </div>
+                           
+
                         </div>
                     </td>
                     <td>
-                    <p style={{float:"right"}}><Currency quantity={val.quantity*(val.price-(val.price*(val.discount/100)))} currency="IDR"/><i class="fas fa-times" style={{paddingLeft:'20px', cursor:'pointer'}} onClick={()=>this.deleteBtn(val.id)}></i></p>
+                    <p style={{float:"right"}}><Currency quantity={val.quantity*(val.price-(val.price*(val.discount/100)))} currency="IDR"/><i className="fas fa-times" style={{paddingLeft:'20px', cursor:'pointer'}} onClick={()=>this.deleteBtn(val.id)}></i></p>
 
                     </td>
                     
@@ -225,18 +238,22 @@ class Cart extends React.Component{
                    { this.props.cart===0 ?
                     <table className='table' style={{width:'900px'}}>
                 <thead>
-                    <td style={{fontSize:'24px'}}>CART IS EMPTY</td>
+                    <tr>
+                    <th style={{fontSize:'24px'}}>CART IS EMPTY</th>
                        
-                    <td><Link to='/product/all'><input type='button' className='tombol' value='CONTINUE SHOPPING' style={{float:'right'}}></input></Link></td>
+                    <th><Link to='/product/all'><input type='button' className='tombol' value='CONTINUE SHOPPING' style={{float:'right'}}></input></Link></th>
+                    </tr>
                </thead>
                </table>
                     :
                    <table className='table' style={{width:'900px'}}>
                
                      <thead>
-                        <td style={{fontSize:'24px'}}>CART</td>
+                         <tr>
+                        <th style={{fontSize:'24px'}}>CART</th>
                        
-                        <td><Link to='/product/all'><input type='button' className='tombol' value='CONTINUE SHOPPING' style={{float:'right'}}></input></Link></td>
+                        <th><Link to='/product/all'><input type='button' className='tombol' value='CONTINUE SHOPPING' style={{float:'right'}}></input></Link></th>
+                        </tr>
                     </thead>
                     <tbody>
 

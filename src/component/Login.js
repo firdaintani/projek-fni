@@ -3,7 +3,7 @@ import '../support/css/login.css'
 import {Link, Redirect} from 'react-router-dom'
 import {connect} from 'react-redux'
 import Loader from 'react-loader-spinner'
-import {onLogin} from './../1. action'
+import {onLogin} from '../1. action'
 
 class Login extends React.Component{
     state={verified:null, error: ''}
@@ -15,7 +15,7 @@ class Login extends React.Component{
     onLogin=()=>{
         var username = this.refs.username.value
         var password = this.refs.password.value
-        // alert(username+' '+password)
+        
        
         this.props.onLogin(username,password)
         
@@ -51,7 +51,6 @@ class Login extends React.Component{
         }
         return(
             <div className='container' style={{marginTop:'70px', paddingTop:'70px'}}>
-                {/* <center><h3 className='navbar-brand'>LOGIN</h3></center> */}
                <form style={{marginRight:'300px', marginLeft:'300px'}}>
                 
                 <div className="form-group">

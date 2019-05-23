@@ -1,11 +1,10 @@
 .table > tbody > tr > td {
     vertical-align: middle;
-    /* border-bottom: 2px black solid; */
 }
 
-.table > thead > td {
-    border-bottom: 2px black solid;
-    border-top: 2px black solid;
+.table > thead > tr > th {
+    border-bottom: 2px black solid !important;
+    border-top: 2px black solid !important;
 }
 .table > tfoot > tr> td {
     border-bottom: 2px black solid;
@@ -20,29 +19,16 @@
      color: #606060;
 }
 
-/* .save-button {
-    position:relative;
-    font-size: 15px;
-    margin-top:-40px;
-    text-align: end;
-     cursor: pointer;
-     color: #606060;
-     margin-left:180px;
-} */
-
 .cancel-button, .save-button{
     position: relative;
-    /* float: right; */
     cursor: pointer;
-    /* display: flex; */
+
    
 
 }
 
 .save-button{
-     /* right: 50px; */
-     left: 170px;
-     /* margin-left: 300px; */
+     left: 140px;
 
     }
 
@@ -61,7 +47,6 @@
 
 .overlay-pict-cart {
     position: relative;
-    /* float: left; */
     cursor: pointer;
   }
   
@@ -77,4 +62,10 @@
     background:black;
     opacity: 0.7;
   
+  }
+  .product-picture-cart{
+      width: 150px;
+      height: 150px;
+      object-fit:scale-down;
+
   }

@@ -1,0 +1,15 @@
+/* .gada-outline:focus{
+
+} */
+.menu-item{
+    font-size: 18px;
+    color: #212529;
+}
+
+.menu-item:hover{
+    color: grey;
+}
+
+.menu-item:focus{
+    outline: none !important;
+}

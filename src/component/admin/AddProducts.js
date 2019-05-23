@@ -5,7 +5,7 @@ import swal from 'sweetalert'
 import '../../support/css/addProduct.css'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import PageNotFound from '../pageNotFound'
+import PageNotFound from '../PageNotFound'
 
 class AddProduct extends React.Component {
     state = { brand: [], category: [], selectedFile: null, error: '' }
@@ -54,7 +54,7 @@ class AddProduct extends React.Component {
     printCategoryOption = () => {
         var data = this.state.category.map((val) => {
             return (
-                <option value={val.id}>{val.category_name}</option>
+                <option value={val.id} key={val.id}>{val.category_name}</option>
             )
         })
         return data
@@ -63,7 +63,7 @@ class AddProduct extends React.Component {
     printBrandOption = () => {
         var data = this.state.brand.map((val) => {
             return (
-                <option value={val.id}>{val.brand_name}</option>
+                <option value={val.id} key={val.id}>{val.brand_name}</option>
             )
         })
         return data
@@ -78,8 +78,7 @@ class AddProduct extends React.Component {
         var stock = parseInt(this.refs.inputStock.value)
         var description = this.refs.inputDesc.value
 
-        // alert(name + ' '+ brand_id+ ' '+category_id+ ' '+price+ ' '+discount+ ' '+stock+ ' '+description +' '+ this.state.selectedFile)
-
+       
         if (name && brand_id && category_id && price && (discount>=0) && stock && description && this.state.selectedFile) {
             var data = { name, brand_id, category_id, price, discount, stock, description }
 
@@ -88,13 +87,13 @@ class AddProduct extends React.Component {
             fd.append('data', JSON.stringify(data))
             Axios.post('http://localhost:4000/product/add', fd)
                 .then((res) => {
-                    // alert(res.data)
+                  
                     if (res.data.error) {
                         swal("Error", res.data.msg, 'error')
 
                     }
                     else {
-                        // alert('berhasil')
+                       
                         swal("Success", "Product has been added", "success")
                         this.setState({ selectedFile: null })
                     }

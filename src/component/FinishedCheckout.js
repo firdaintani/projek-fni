@@ -1,11 +1,11 @@
 import React from 'react'
-import { connect } from 'react-redux'
 import Axios from 'axios';
 import { urlApi } from '../support/urlApi';
 import swal from 'sweetalert2'
 import Loader from 'react-loader-spinner'
 import Currency from 'react-currency-formatter'
-class Checkout2 extends React.Component {
+class FinishedCheckout
+ extends React.Component {
     state = { data : {}, getData: false }
     componentDidMount() {
         this.getTotal()
@@ -15,7 +15,7 @@ class Checkout2 extends React.Component {
     getTotal = () => {
       
         var id = this.props.match.params.id
-        // alert(id)
+        
         Axios.get(urlApi + '/transaction/total/' + id)
             .then((res) => {
                 if (res.data.error) {
@@ -30,11 +30,9 @@ class Checkout2 extends React.Component {
 
     }
     render() {
-        // var {total, payment_due, account_name, account_number, bank_pict} = this.state.data.data
         if (this.state.getData) {
             return (
                 <div className="container" style={{ marginTop: '80px' }}>
-                    {/* <h1>Checkout Success</h1> */}
                     <center>
                         <div style={{ marginTop: '100px' }}>
                             <p>TOTAL PAYMENT :</p>
@@ -85,12 +83,7 @@ class Checkout2 extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        total: state.totalPayment.total
-    }
-}
 
 
 
-export default connect(mapStateToProps)(Checkout2)
+export default FinishedCheckout

@@ -1,53 +1,26 @@
 import React from 'react'
 import Currency from 'react-currency-formatter';
 import {Link} from 'react-router-dom'
-import Axios from 'axios';
-import { urlApi } from '../support/urlApi';
-import {connect} from 'react-redux'
-import swal from 'sweetalert';
 import cookie from 'universal-cookie'
-import PageNotFound from './pageNotFound';
+import PageNotFound from '../PageNotFound';
 import {withRouter} from 'react-router-dom'
 
 const objCookie = new cookie()
 class Transaction extends React.Component {
-    state = { transaction: [] , searchKey : ''}
+    state = { transaction: [] }
     
-  
-
     componentDidMount() {
-        if(this.props.linkUrl){         
-            this.getTransaction(this.props.linkUrl+'&s=1&u='+this.props.username)
-        }else{
-            this.getTransaction('/transaction/search?s=1&u='+this.props.username)
-
-        }   
-     }
-  
-
-    componentWillReceiveProps(newProps){
-           if(newProps.linkUrl){
-        
-            this.getTransaction(newProps.linkUrl+'&s=1&u='+this.props.username)
-        }else{
-            this.getTransaction('/transaction/search?s=1&u='+this.props.username)
-        }   
-        }
-
-    getTransaction=(link)=>{
-       
-            Axios.get(urlApi+link)
-            .then((res)=>{
-                if(res.data.error){
-                    swal("Error", res.data.msg, "error")
-                }else{
-                    this.setState({transaction: res.data})
-                }
-            })
-            .catch((err)=>console.log(err))
+        this.setState({transaction : this.props.data})
     
-       
     }
+
+
+
+    componentWillReceiveProps(newProps) {
+            this.setState({transaction : newProps.data})
+        
+    }
+
     
     renderTransaction = () => {
         var data = this.state.transaction.map((val) => {
@@ -79,14 +52,17 @@ class Transaction extends React.Component {
                    <table className='table'>
 
                        <thead style={{ textAlign: 'center' }}>
-
-                           <td>Order ID</td>
-                           <td>Order Date</td>
-                           <td>Total Payment</td>
-                           <td>Payment Due</td>
+                        <tr>
+                           <th>Order ID</th>
+                          
+                           <th>Order Date</th>
                            
-                           <td></td>
-                           {/* <td></td> */}
+                           <th>Total Payment</th>
+                           <th>Payment Due</th>
+                           
+                           <th></th>
+                           </tr>
+                       
                        </thead>
                        <tbody style={{ textAlign: 'center' }}>
 
@@ -104,10 +80,5 @@ class Transaction extends React.Component {
     }
 }
 
-const mapStateToProps=(state)=>{
-    return {
-        username : state.user.username
-    }
-}
 
-export default withRouter(connect(mapStateToProps)(Transaction))
+export default withRouter(Transaction)

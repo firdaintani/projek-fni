@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom'
 import { MDBDataTable } from 'mdbreact';
 import Axios from 'axios'
 import swal from 'sweetalert'
-import { urlApi } from './../../support/urlApi'
+import { urlApi } from '../../support/urlApi'
 import '../../support/css/manageProduct.css'
 import { connect } from 'react-redux'
-import PageNotFound from '../pageNotFound'
+import PageNotFound from '../PageNotFound'
 
 import { MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter } from 'mdbreact';
 
@@ -245,7 +245,6 @@ class ManageProduct extends React.Component {
         var stock = this.refs.editStock.value ? this.refs.editStock.value : this.state.editItem.stock
         var description = this.refs.editDescription.value ? this.refs.editDescription.value : this.state.editItem.description
 
-        // alert (description)
         var newData = { name, brand_id, category_id, price, discount, stock, description }
         if (this.state.selectedFileEdit) {
             var fd = new FormData()

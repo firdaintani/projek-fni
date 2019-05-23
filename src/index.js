@@ -11,8 +11,6 @@ import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
 import ReduxThunk from 'redux-thunk'
 import Reducers from './2. reducers'
-
-// MDB React
 import 'mdbreact/dist/css/mdb.css';
 
 const globalState = createStore(Reducers,{},applyMiddleware(ReduxThunk))

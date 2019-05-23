@@ -3,37 +3,29 @@ import './App.css';
 import Navbar from './component/Navbar'
 import Home from './component/home/Header'
 import { Route } from 'react-router-dom';
-import Product from './component/product.1.jsx'
+import Product from './component/Product'
 import Login from './component/Login'
 import Register from './component/Register'
-import ProductDetail from './component/productDetail'
-import Cart from './component/cart2'
+import ProductDetail from './component/ProductDetail.js'
+import Cart from './component/Cart'
 import ScrollToTop from './component/scrollToTop'
-import Profile from './component/Profile'
-import VerifyEmail from './component/verifyEmail'
-import ManageCategory from './component/admin/manageCat'
-import ManageBrand from './component/admin/manageBrand'
-import ManageProduct from './component/admin/manageProduct'
-import AddProduct from './component/admin/addProduct'
+import SlideMenu from './component/SlideMenu'
+import TransactionDetail from './component/transaction/TransactionDetail'
+import TabTransaction from './component/transaction/TabTrasaction'
+import PageNotFound from './component/PageNotFound'
+import Checkout from './component/Checkout.js'
+import FinishCheckout from './component/FinishedCheckout'
+import VerifyEmail from './component/VerifyEmail'
+import ManageCategory from './component/admin/ManageCategory'
+import ManageBrand from './component/admin/ManageBrand'
+import ManageProduct from './component/admin/ManageProduct'
+import AddProduct from './component/admin/AddProducts'
+
 import cookie from 'universal-cookie'
 import { keepLogin, cookieChecked , countCart} from './1. action'
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
+import { withRouter, Switch } from 'react-router-dom'
 import Loader from 'react-loader-spinner'
-
-import SlideMenu from './component/slideMenu'
-// import Transaction from './component/transaction'
-import TransactionDetail from './component/transactionDetail2'
-import ManageTransaction from './component/admin/manageTransaction'
-import FinishedTransaction from './component/admin/finishedTransaction'
-import TabTransaction from './component/TabTrasaction'
-import UploadPayment from './component/uploadPayment'
-import PageNotFound from './component/pageNotFound'
-import Checkout from './component/Checkout'
-import FinishCheckout from './component/checkout2'
-import Countdown from './component/Countdown'
-
-
 var objCookie = new cookie()
 
 
@@ -50,6 +42,11 @@ class App extends Component {
     }
 
   }
+
+  componentWillReceiveProps(newProps){
+    this.props.countCart(newProps.username)
+    
+  }
   render() {
     if (this.props.cookie) {
       return (
@@ -60,6 +57,7 @@ class App extends Component {
           </div>
 
           <ScrollToTop>
+            <Switch>
             <Route path='/' component={Home} exact />
             <Route path='/login' component={Login} exact />
             <Route path='/register' component={Register} exact />
@@ -69,20 +67,14 @@ class App extends Component {
             <Route path='/manage-brand' component={ManageBrand} exact />
             <Route path='/manage-product' component={ManageProduct} exact />
             <Route path='/add-product' component={AddProduct} exact />
-            <Route path='/profile' component={Profile} exact />
             <Route path='/verify' component={VerifyEmail} exact />
             <Route path='/product' component={Product}/>
-
             <Route path='/transaction-detail/:id' component={TransactionDetail} exact />
-            <Route path='/manage-transaction' component={ManageTransaction} exact />
-            <Route path='/finished-transaction' component={FinishedTransaction} exact />
             <Route path='/transaction' component={TabTransaction} />
-            <Route path='/upload-payment/:id' component={UploadPayment} exact />
-            <Route path='/pagenotfound' component={PageNotFound} exact/>
             <Route path='/checkout' component={Checkout} exact/>
             <Route path='/finishcheckout/:id' component={FinishCheckout} exact/>
-            <Route path='/countdown' component={Countdown} exact/>
-
+            <Route path='*' component={PageNotFound} exact/>
+            </Switch>
           </ScrollToTop>
         
         </div>
@@ -105,8 +97,8 @@ class App extends Component {
 const mapStateToProps = (state) => {
   return {
     cookie: state.user.cookie,
-    // getCart : state.user.getCart,
-    role : state.user.role
+    role : state.user.role,
+    username : state.user.username
   }
 }
 

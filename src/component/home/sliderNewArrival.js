@@ -6,15 +6,15 @@ import swal from 'sweetalert'
 import { urlApi } from '../../support/urlApi'
 import Axios from 'axios'
 import { withRouter } from 'react-router-dom'
-class SliderProductDiscount extends Component {
+class SliderNewArrival extends Component {
   state = { product: [] }
 
   componentDidMount() {
-    this.getProductDiscount()
+    this.getNewArrival()
   }
 
-  getProductDiscount = () => {
-    Axios.get(urlApi + '/product/discount')
+  getNewArrival = () => {
+    Axios.get(urlApi + '/product/new')
       .then((res) => {
         if (res.data.error) {
           swal("Error", res.data.msg, 'error')
@@ -39,9 +39,13 @@ class SliderProductDiscount extends Component {
           </center>
           <img title={val.name} className="card-img-top gambar-list" src={urlApi + '/' + val.product_image} alt="Card" />
 
-          <div className='discount-triangle-onslider'>
-            <div className='discount'>{val.discount}%</div>
-          </div>
+          {
+            val.discount > 0 ?
+              <div className='discount-triangle'>
+                <div className='discount'>{val.discount}%</div>
+              </div>
+              : null
+          }
 
           <div className="card-body">
             <div>
@@ -77,4 +81,4 @@ class SliderProductDiscount extends Component {
     );
   }
 }
-export default withRouter(SliderProductDiscount)
+export default withRouter(SliderNewArrival)

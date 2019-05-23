@@ -1,13 +1,10 @@
 import React from 'react'
 import { MDBDataTable } from 'mdbreact';
-import Axios from 'axios';
-import { urlApi } from '../../support/urlApi';
-import swal from 'sweetalert';
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import cookie from 'universal-cookie'
 import Currency from 'react-currency-formatter'
-import PageNotFound from '../pageNotFound';
+import PageNotFound from '../PageNotFound';
 
 const objCookie = new cookie()
 class FinishedTransaction extends React.Component {
@@ -16,7 +13,6 @@ class FinishedTransaction extends React.Component {
 
             columns:
                 [
-
                     {
                         label: 'Order ID',
                         field: 'id',
@@ -47,51 +43,16 @@ class FinishedTransaction extends React.Component {
         }
     }
 
-
-
-
-
-
     componentDidMount() {
-        if (this.props.linkUrl) {
-            this.getTransaction(this.props.linkUrl+'&s=3')
-        } else {
-            this.getTransaction('/transaction/search?s=3')
-        }
+       
+        this.mapData(this.props.data)
     }
-
-
-
     componentWillReceiveProps(newProps) {
-        if (newProps.linkUrl) {
-
-            this.getTransaction(newProps.linkUrl+'&s=3')
-        } else {
-            this.getTransaction('/transaction/search?s=3')
-
-        }
-    }
-
-    getTransaction = (link) => {
-        if (this.props.role === 'user') {
-            link += `&u=${this.props.username}`
-        }
-
-        Axios.get(urlApi + link)
-            .then((res) => {
-                if (res.data.error) {
-                    swal.fire("Error", res.data.msg, "error")
-                } else {
-
-                    this.mapData(res.data)
-                }
-            })
-            .catch((err) => console.log(err))
-
-
+        this.mapData(newProps.data)
     }
 
     mapData = (data) => {
+
         var newData = { ...this.state.data }
         var dataBr = data.map((val) => {
 
@@ -107,40 +68,6 @@ class FinishedTransaction extends React.Component {
         this.setState({ data: newData })
 
     }
-    deleteBtn = (id) => {
-        swal({
-            title: "Are you sure?",
-            text: "Once deleted, you will not be able to recover this data!",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-        })
-            .then((willDelete) => {
-                if (willDelete) {
-                    Axios.delete(urlApi + '/transaction/delete/' + id)
-                        .then((res) => {
-                            if (res.data.error) {
-                                swal({
-                                    text: res.data.msg,
-                                    icon: "warning",
-                                })
-                            } else {
-                                // this.getBrand()
-                                this.getDataFinished()
-
-                                swal("Data has been deleted!", {
-                                    icon: "success",
-                                });
-
-
-                            }
-                        })
-                } else {
-                    swal("Your data is safe!");
-                }
-            });
-    }
-
 
     render() {
         if (objCookie.get('username') === undefined) {
@@ -148,7 +75,7 @@ class FinishedTransaction extends React.Component {
         }
         return (
             <div className="container" style={{ marginTop: '20px' }}>
-                {/* <h3>Finished Transaction</h3> */}
+
                 {
                     this.state.data.rows.length === 0 ?
                         <h4>Transaction Empty</h4> :
@@ -167,8 +94,7 @@ class FinishedTransaction extends React.Component {
 
 const MapStateToProps = (state) => {
     return {
-        role: state.user.role,
-        username: state.user.username
+        role: state.user.role
     }
 }
 export default connect(MapStateToProps)(FinishedTransaction)

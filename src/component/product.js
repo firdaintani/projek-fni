@@ -1,258 +1,323 @@
 import React from 'react'
-import {Link} from 'react-router-dom'
-import ProductList from './productList'
-import {Dropdown, DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap'
+import Loader from 'react-loader-spinner'
+import ProductList from './ProductList'
 import queryString from 'query-string';
 import '../support/css/product.css';
 import '../support/css/productList.css'
-
-import {withRouter} from 'react-router-dom'
-
-import Currency from 'react-currency-formatter';
+import { withRouter } from 'react-router-dom'
 import Axios from 'axios';
 import { urlApi } from '../support/urlApi';
 import swal from 'sweetalert';
 
-class Product extends React.Component{
-    constructor(props) {
-        super(props);
-    
-        this.state = {
-          dropdownOpen: false,
-          category:[{id:1,link:'all',title:'All'},{id:2,link:'brush-pen',title:'Brush Pen'},
-          {id:3,link:'drawing-pen',title:'Drawing Pen'},
-          {id:4,link:'watercolor-paper',title:'Watercolor Paper'},
-          {id:5,link:'watercolor',title:'Watercolor'},
-          {id:6,link:'brush-paint',title:'Brush Paint'}],
-          cat: '', id: 'category1',
-          product:[
-            ]
-        };
-      }
-    
-
-
-    changeActive=(id)=>{
-       
-        this.textInput.className+='active'
+class Product extends React.Component {
+    state = {
+        product: [], getData: false, catSearch: '', category: [], searchKey: '', brand: [],
+        sortOption: [{ value: 'none', name: "Most Relateable" }, { value: 'date-desc', name: "Date, new to old" },
+        { value: 'date-asc', name: "Date, old to new" }, { value: 'name-asc', name: "Product Name, A to Z" }, { value: 'name-desc', name: "Product Name, Z to A" }, { value: 'price-asc', name: "Price, low to high" }, { value: 'price-desc', name: "Price, high to low" }]
     }
 
-    renderCategory=()=>{
-        var data = this.state.category.map((val,index)=>{
-          
-            return (
-                <Link to={val.link} className='text-link font ' ><div ref={(div) => {this.reflink = div}} >{val.title}</div></Link>
+    componentDidMount() {
 
+        this.getCategory()
+        this.getBrand()
+        this.getProductList()
+    }
+
+
+    getCategory = () => {
+        Axios.get(urlApi + '/category/all')
+            .then((res) => {
+                if (res.data.error) {
+                    swal.fire("Error", res.data.msg, 'error')
+                } else {
+                    this.setState({ category: res.data })
+                }
+            })
+            .catch((err) => console.log(err))
+
+
+    }
+
+
+    getBrand = () => {
+        Axios.get(urlApi + '/brand/all')
+            .then((res) => {
+                if (res.data.error) {
+                    swal.fire("Error", res.data.msg, 'error')
+                } else {
+                    this.setState({ brand: res.data })
+                }
+            })
+            .catch((err) => console.log(err))
+
+
+    }
+
+
+    getProductList = () => {
+        if (this.props.location.search) {
+
+            var newLink = this.getLink()
+            this.getData(newLink)
+        } else {
+            this.getData('/product/all')
+        }
+    }
+
+    link = (searchKeyword, category_id, brand_id, price_min, price_max, sortby) => {
+        var newLink = `/product/search`
+        var link = []
+        if (searchKeyword) {
+            link.push({
+                params: 'key=' + searchKeyword
+            })
+        }
+        if (category_id > 0) {
+            link.push({
+                params: 'category=' + category_id
+            })
+        }
+        if (brand_id > 0) {
+            link.push({
+                params: 'brand=' + brand_id
+            })
+        }
+        if (price_min) {
+            link.push({
+                params: 'price_min=' + price_min
+            })
+        }
+        if (price_max) {
+            link.push({
+                params: 'price_max=' + price_max
+            })
+        }
+        if (sortby !== 'none' && sortby !== undefined) {
+
+            link.push({
+                params: 'sortby=' + sortby
+            })
+        }
+
+        for (var i = 0; i < link.length; i++) {
+            if (i === 0) {
+                newLink += '?' + link[i].params
+            } else {
+                newLink += '&' + link[i].params
+            }
+        }
+        return newLink
+
+    }
+
+    getLink = () => {
+        let params = queryString.parse(this.props.location.search);
+
+        var newLink = this.link(params.key, params.category, params.brand, params.price_min, params.price_max, params.sortby)
+        return newLink
+    }
+
+    pushUrl = () => {
+        var searchKeyword = this.refs.searchKeyword.value
+        var category_id = this.refs.selectCategory.value
+        var brand_id = this.refs.selectBrand.value
+        var price_min = this.refs.priceMin.value
+        var price_max = this.refs.priceMax.value
+
+        var sortby = this.refs.sortOption.value
+        var newLink = this.link(searchKeyword, category_id, brand_id, price_min, price_max, sortby)
+
+        this.props.history.push(newLink)
+        this.setState({ searchKey: newLink })
+        return newLink
+    }
+
+
+    renderCategory = () => {
+        var data = this.state.category.map((val) => {
+            return (
+                <option value={val.id} key={val.id}>{val.category_name}</option>
             )
         })
         return data
     }
 
-    componentDidMount(){
-        this.getCat()
-        this.getProductList()
-    }
+    renderBrand = () => {
+        var data = this.state.brand.map((val) => {
 
-    getProductList=()=>{
-        Axios.get(urlApi+'/product/product-list')
-        .then((res)=>{
-            if(res.data.error){
-                swal("Error", res.data.msg,"error")
-
-            }else{
-                this.setState({product : res.data})
-            }
-        })
-        .catch((err)=>console.log(err))
-    }
-
-    getCat=()=>{
-        var cat = this.props.match.params.category
-        this.setState({cat})
-    }
-
-    toProdDetail=(id)=>{
-
-        this.props.history.push('/product-detail/'+id);
-    }
-    
-
-    getProps=()=>{
-        var cat = this.props.match.params.category
-        let url = this.props.location.search;
-        if(url){
-            let params = queryString.parse(url);
-            // alert(url)
-            console.log(url)
-            console.log(params)
-            // alert(params.sortby)
-        }else{
-            // alert('Gaada')
-
-        }
-
-
-        
-       return (
-           <ProductList category={cat}/>
-       )
-    }
-
-    renderProdukJsx = () => {
-        var jsx = this.state.product.map((val) => {
             return (
-                <div className="card col-md-3 mr-5 mt-3 border-card" style={{width: '18rem'}} onClick={()=>this.toProdDetail(val.id)}>
-                <p style={{textAlign:'center',marginTop:'20px'}} className='border-brand'>{val.brand_name}</p>
-               {
-                   val.stock===0 ?
-                   <div class="overlay-pict">
-                   <img title={val.name} className="card-img-top gambar-list" src={urlApi+'/'+val.product_image} alt="Card" />
-
-                  {/* <div class="overlay-pict"> */}
-                  <div class="overlay-text">Out of Stock</div>
-              {/* </div> */}
-              </div>
-                :
-               
-                <img title={val.name +' '+val.stock} className="card-img-top gambar-list" src={urlApi+'/'+val.product_image} alt="Card" />
-
-               } 
-               
-               
-               
-                    {   
-                        val.discount > 0 ?
-                        <div className='discount-triangle'>
-                        <div className='discount'>{val.discount}%</div>
-                        </div>
-                        : null
-                    }
-
-                    <div className="card-body">
-                    <h4 className="card-text" style={{height:'30px',fontSize:'17px',textAlign:'center'}}>{val.name}</h4>
-                  <div style={{textAlign:'center'}}>
-                    {/* {
-                        val.discount > 0 ?
-                        <p className="card-text" style={{textDecoration:'line-through',color:'red',display:'inline'}}><Currency quantity={val.price} currency="IDR"/>
-                        </p>
-                        : null
-                    } */}
-
-                    <p style={{fontWeight:'500', marginTop:'18px'}}><Currency quantity={val.price - (val.price*(val.discount/100))} currency="IDR" /></p>
-                    </div>
-                    {/* <p style={{textAlign:'center', paddingTop:'10px',fontWeight:'500'}}>
-                    <Currency quantity={val.price} currency="IDR"/>
-                    </p> */}
-                    {/* <Link to={'/product-detail/' + val.id}><input type='button' className='tombol' value='Add To Cart' /></Link> */}
-                    </div>
-                </div>
+                <option value={val.id} key={val.id}>{val.brand_name}</option>
             )
         })
+        return data
+    }
 
-        return jsx
+    selectBrand = () => {
+        var category = this.refs.selectCategory.value
+        if (category !== "none") {
+            Axios.get(urlApi + '/brand/selectbrand?category_id=' + category)
+                .then((res) => {
+                    if (res.data.error) {
+                        swal("Error", res.data.msg, "error")
+
+                    } else {
+                        this.setState({ brand: res.data })
+                    }
+                })
+                .catch((err) => console.log(err))
+
+        } else {
+            this.getBrand()
+        }
     }
 
 
-    render(){
-        return(
-            <div className='row' style={{marginTop:'70px', paddingTop:'10px',display: "flex", alignItems: "flex-start" }}>
-                <div className='col-9' style={{overflow: 'auto'}}>
+
+    filterBtn = () => {
+        var newLink = this.pushUrl()
+        this.getData(newLink)
+    }
+
+    sortOption = () => {
+        var newLink = ''
+        var sortOption = this.refs.sortOption.value
+        var urlParams = new URLSearchParams(this.props.location.search);
+        var splitLink = urlParams.toString().split('&')
+
+        if (sortOption !== "none") {
+            if (this.props.location.search) {
+                if (urlParams.has('sortby')) {
+                    if (urlParams.toString().includes('&')) {
+                        splitLink.pop()
+                        newLink = '/product/search?' + splitLink.join('&') + '&sortby=' + sortOption
+                    }
+                    else {
+                        newLink = '/product/search?sortby=' + sortOption
+                    }
+
+                } else {
+                    newLink = this.state.searchKey + '&sortby=' + sortOption
+                }
+            } else if (sortOption !== "none") {
+                newLink = '/product/search?sortby=' + sortOption
+            }
+        } else if (sortOption === "none") {
+            if (urlParams.has('sortby')) {
+                if (urlParams.toString().includes('&')) {
+                    splitLink.pop()
+                    newLink = '/product/search?' + splitLink.join('&')
+                }
+                else {
+                    newLink = '/product/all'
+                }
+
+            }
+        }
+        this.props.history.push(newLink)
+        this.setState({ searchKey: newLink })
+        this.getData(newLink)
+    }
+
+    getData = (newLink) => {
+        this.setState({ getData: false })
+
+        Axios.get(urlApi + newLink)
+            .then((res) => {
+                if (res.data.error) {
+                    swal("Error", res.data.msg, "error")
+                } else {
+                    this.setState({ product: res.data, searchKey: newLink, getData: true })
+                }
+            })
+            .catch((err) => console.log(err))
+    }
+
+    getOption = () => {
+        var params = queryString.parse(this.props.location.search);
+        var data = this.state.sortOption.map((val) => {
+            if (params.sortby === val.value) {
+                return (
+                    <option value={val.value} key={val.value} selected>{val.name}</option>
+                )
+
+            }
+            return (
+                <option value={val.value} key={val.value}>{val.name}</option>
+            )
+        })
+        return data
+    }
+    render() {
+        return (
+            <div className='row' style={{ marginTop: '70px', paddingTop: '10px', display: "flex", alignItems: "flex-start" }}>
+                <div className='col-9' style={{ overflow: 'auto' }}>
                     <div className='container'>
-                    <div className='row'>
+                        <div>
+                            <p style={{ display: 'inline' }}>Sort : </p>
+                            <select className="form-control" style={{ display: 'inline', width: '25%' }} ref='sortOption' onChange={this.sortOption}>
+                                {this.getOption()}
+
+                            </select>
+                        </div>
+                        {
+                            this.state.getData ?
+                                <ProductList product={this.state.product} />
+                                :
+                                <div>
+                                    <center>
+                                        <Loader
+                                            type="ThreeDots"
+                                            color="#000000"
+                                            height="300"
+                                            width="300"
+                                        />
+                                    </center>
+                                </div>
+
+                        }
+                    </div>
+                </div>
+                <div className='col-3' style={{ height: '100%', borderLeft: '2px solid black', position: "fixed", right: 0 }}>
+                    <div><h4 className='title-text'>FILTER</h4></div>
+                    <p>Keyword : </p>
+                    <input style={{ marginTop: '-18px' }} type="text" ref="searchKeyword" className="form-control outline-none" placeholder="type the product name..." />
+                    <div>
+                        <p style={{ display: 'inline' }}>Category : </p>
+                        <select className="form-control" ref='selectCategory' style={{ width: '100% !important' }} onChange={this.selectBrand}>
+                            <option value="none">All Category</option>
+                            {this.renderCategory()}
+                        </select>
+                    </div>
+                    <div>
+                        <p style={{ display: 'inline' }}>Brand : </p>
+                        <select className="form-control" style={{ width: '100% !important' }} ref='selectBrand'>
+                            <option value='none'>All Brand</option>
+                            {this.renderBrand()}
+                        </select>
+                    </div>
+
+                    <p>Price : </p>
+                    <div className="row" style={{ marginTop: '-20px' }}>
+
+                        <div className="col-5 mt-1">
+                            <input type='number' ref='priceMin' className='form-control outline-none' placeholder='min (Rp)' ></input>
+                        </div>
+                        <div className='col-2 mb-auto mt-auto'>
+                            <center>
+                                <h4>-</h4>
+                            </center>
+                        </div>
+                        <div className='col-5 mt-1'>
+                            <input type='number' ref='priceMax' className='form-control outline-none' placeholder='max (Rp)' ></input>
+                        </div>
+
+                    </div>
+                    <div className='row mt-4 font'>
                         <div className='col'>
-                            {/* <select>
-                                <option disabled selected hidden style={{border:'none', borderBottom:'1px solid black'}}>Sort by</option>
-
-                                <option>Price</option>
-                            </select> */}
-                           
+                            <input type='button' style={{ width: '100%' }} className='tombol' value='FILTER' onClick={this.filterBtn} />
                         </div>
                     </div>
-                    <div className='row justify-content-center'>
-                    {this.renderProdukJsx()}
                 </div>
-                    {/* {this.getProps()} */}
-                    </div>
-                </div>
-                <div className='col-3' style={{height:'100%',borderLeft:'2px solid black', position:"fixed", right:0}}>
-                    <div><h4 className='title-text'>Categories</h4></div>
-                    {this.renderCategory()}
-                    <div style={{marginTop:'50px'}}></div>
-                    <Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
-                        <DropdownToggle caret>
-                        Sort by
-                        </DropdownToggle>
-                        <DropdownMenu>
-                        <Link to={'/product/'+this.props.match.params.category+'?sortby=date-asc'}><DropdownItem>Date, new to old</DropdownItem></Link>
-                        <Link to={'/product/'+this.props.match.params.category+'?sortby=date-desc'}><DropdownItem>Date, old to new</DropdownItem></Link>
-                        <Link to={'/product/'+this.props.match.params.category+'?sortby=name-asc'}><DropdownItem>Product Name, A to Z</DropdownItem></Link>
-                        <Link to={'/product/'+this.props.match.params.category+'?sortby=name-desc'}><DropdownItem>Product Name, Z to A</DropdownItem></Link>
-                        <Link to={'/product/'+this.props.match.params.category+'?sortby=price-asc'}><DropdownItem>Price, low to high</DropdownItem></Link>
-                        <Link to={'/product/'+this.props.match.params.category+'?sortby=price-desc'}><DropdownItem>Price, high to low</DropdownItem></Link>
-
-                        </DropdownMenu>
-                    </Dropdown>
-                    {/* <div className="row">
-                    <div className="col mt-4">
-                        <div className="input-group mb-2">
-                            <input type="text" ref="searchBook" className="form-control" placeholder="Masukkan kata kunci ... "  />
-                            <div className="input-group-append">
-                                <button className="btn btn-info" type="button" id="button-addon2" ><i className="fas fa-search" /></button>
-                            </div>
-                        </div> 
-                        <div className="card p-2">
-                            
-                            <form ref="formFilter" style={{boxShadow:"none", fontSize:"14px"}}>
-                                <div className="form-label col-sm-6 text-left font-weight-bold pl-1 text-secondary  -1">Cari Produk</div>
-                                <input className="form-control form-control-sm mb-2" placeholder="Cari Produk"></input>
-                                
-                                <div className="form-label col-sm-6 text-left font-weight-bold pl-1 text-secondary mb-1">Cari Toko</div>
-                                <input className="form-control form-control-sm mb-2" placeholder="Cari Toko"></input>
-                                
-                                <div className="form-label col-sm-6 text-left font-weight-bold pl-1 text-secondary mb-1">Cari User</div>
-                                <input className="form-control form-control-sm mb-2" placeholder="Cari User"></input> 
-
-                                <button className="btn btn-info"><i class="fas fa-filter"></i> Filter</button>                               
-                            </form>
-
-                        </div>
-                        
-                    </div>
-                
-                
-                </div> */}
-                <div className="row">
-                    <div className="col mt-4">
-                        <div className="input-group mb-2">
-                            <input type="text" ref="searchBook" className="form-control outline-none" placeholder="Masukkan kata kunci ... "  />
-                            <div className="input-group-append">
-                                <button className="btn btn-info" type="button" id="button-addon2" ><i className="fas fa-search" /></button>
-                            </div>
-                        </div> 
-                    </div>
-                </div>
-                <h5 className='mt-5'>Filter by price</h5>
-
-                <div className="row">
-                    <div className="col-5 mt-1">
-                    <input type='number' className='form-control outline-none' placeholder='min'></input>
-                    </div>
-                    <div className='col-2 mb-auto mt-auto'>
-                    <center>
-                    <h4>-</h4>
-                    </center>
-                    </div>
-                    <div className='col-5 mt-1'>
-                    <input type='number' className='form-control outline-none' placeholder='max'></input>
-                    </div>
-
-                </div>
-                <div className='row mt-4 font'>
-                    <div className='col'>
-                    <input type='button'  style={{width:'100%'}} className='tombol' value='FILTER'/>
-                </div>
-                </div>
-            </div>
             </div>
         )
     }

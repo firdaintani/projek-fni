@@ -1,15 +1,14 @@
 import React from 'react';
 import gambar from '../../support/img/img-header.jpg'
 import '../../support/css/header.css'
-import SliderCat from './SliderCat'
+import SliderCategory from './SliderCategory.js'
 import SliderProductDiscount from './SliderProductDiscount'
 import 'slick-carousel/slick/slick.css'; 
 import 'slick-carousel/slick/slick-theme.css';
 import {Link} from 'react-router-dom'
-import SliderNewArrival from './sliderNewArrival'
-import About from './About'
-import Contact from './Contact';
-
+import SliderNewArrival from './sliderNewArrival.js'
+import Contact from './Contact.js';
+import About from './About.js'
 class Header extends React.Component{
     // state={isLogin:false}
     render(){
@@ -34,23 +33,23 @@ class Header extends React.Component{
                     </div>
                     </div>
                 </div>
-                <hr class="garis"></hr>
+                <hr className="garis"></hr>
                 <center><h3 className='navbar-brand' style={{marginTop:'30px'}}>NEW ARRIVAL</h3></center>
                 <SliderNewArrival/>
                 
-                <hr class="garis"></hr>
+                <hr className="garis"></hr>
                 <center><h3 className='navbar-brand' style={{marginTop:'30px'}}>DISCOUNT</h3></center>
                 <SliderProductDiscount/>
                 
-                <hr class="garis"></hr>
+                <hr className="garis"></hr>
                 <center><h3 className='navbar-brand' style={{marginTop:'30px'}}>CATEGORIES</h3></center>
-                <SliderCat/>
-                <hr class="garis"></hr>
+                <SliderCategory/>
+                <hr className="garis"></hr>
                 <center><h3 className='navbar-brand' style={{marginTop:'30px'}}>ABOUT</h3></center>
                 <About/>
-                <hr class="garis"></hr>
+                <hr className="garis"></hr>
                 <Contact/>
-                <hr class="garis"></hr>
+                <hr className="garis"></hr>
                 
             </div>
             

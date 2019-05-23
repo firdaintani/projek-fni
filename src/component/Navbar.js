@@ -1,10 +1,8 @@
 import React from 'react'
 import '../support/css/navbar.css'
-// import SlideMenu from './slideMenu'
 import {Link} from 'react-router-dom'
-// import {Collapse} from 'reactstrap'
 import {connect} from 'react-redux'
-import {onLogout} from './../1. action'
+import {onLogout} from '../1. action'
 import swal from 'sweetalert'
 import {withRouter} from 'react-router-dom'
 
@@ -48,8 +46,9 @@ class Navbar extends React.Component{
                     <li className="nav-item">
                     {
                       this.props.role==='user' ?
-                        <Link to='/cart'><a className="nav-link" href="/"><i class="fas fa-shopping-cart"><sup><span class="badge badge-danger">{this.props.cart !== 0 ? this.props.cart : null}</span></sup></i></a></Link> 
-                        : null
+                      <div className='mt-2'><p style={{display:'inline'}}>Hi,{this.props.username}!</p>
+                        <Link to='/cart'><i style={{display:'inline'}} className="fas fa-shopping-cart nav-link"><sup><span className="badge badge-danger">{this.props.cart !== 0 ? this.props.cart : null}</span></sup></i></Link> 
+                        </div>: null
                   }
                     </li>
                     <li className="nav-item">

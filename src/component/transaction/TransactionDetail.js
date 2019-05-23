@@ -1,15 +1,12 @@
 import React from 'react'
-
 import Currency from 'react-currency-formatter'
-import { urlApi } from '../support/urlApi';
+import { urlApi } from '../../support/urlApi';
 import Axios from 'axios';
 import Swal from 'sweetalert2'
-// import Countdowns from './Countdown'
 import Countdown from 'react-countdown-now';
-import '../support/css/transactionDetail.css'
+import '../../support/css/transactionDetail.css'
 import { connect } from 'react-redux'
-import { MDBContainer, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader} from 'mdbreact';
-// const Completionist = () => <span>You are good to go!</span>;
+import { MDBContainer, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader } from 'mdbreact';
 
 class TransactionDetail extends React.Component {
     state = { transactionDetail: [], addressMethod: {}, selectedFile: null, modal: false }
@@ -17,6 +14,7 @@ class TransactionDetail extends React.Component {
     componentDidMount() {
         this.getTransactionDetail()
         this.getAddressDetail()
+
     }
     toggle = () => {
         this.setState({
@@ -113,7 +111,7 @@ class TransactionDetail extends React.Component {
 
         }
     }
-    wrongPicture=()=>{
+    wrongPicture = () => {
         var id = this.props.match.params.id
         Swal.fire({
             title: 'Please wait',
@@ -285,7 +283,7 @@ class TransactionDetail extends React.Component {
                                         <p>The user has not uploaded an image</p>
                                         :
                                         <center>
-                                            <a href={urlApi + '/' + payment_picture}  target="_blank" rel="noopener noreferrer" title={'Click to enlarge picture'}> <img alt='payment' src={urlApi + '/' + payment_picture} className='payment-proof'></img></a>
+                                            <a href={urlApi + '/' + payment_picture} target="_blank" rel="noopener noreferrer" title={'Click to enlarge picture'}> <img alt='payment' src={urlApi + '/' + payment_picture} className='payment-proof'></img></a>
                                         </center>
                             }
                             {
@@ -302,19 +300,19 @@ class TransactionDetail extends React.Component {
                         </div>
                     </div>
                 </div>
-                { this.state.modal ?
-                <MDBContainer>
-              
-                <MDBModal isOpen={this.state.modal} toggle={this.toggle}>
-                    <MDBModalHeader toggle={this.toggle}>Decline Payment</MDBModalHeader>
-                    <MDBModalBody>
-                        <MDBBtn color="secondary" onClick={this.cancelPayment}>salah tf</MDBBtn>
-                        <MDBBtn color="primary" onClick={this.wrongPicture}>gambar ga jelas</MDBBtn>
-                    </MDBModalBody>
+                {this.state.modal ?
+                    <MDBContainer>
 
-                </MDBModal>
-            </MDBContainer>
-                : null
+                        <MDBModal isOpen={this.state.modal} toggle={this.toggle}>
+                            <MDBModalHeader toggle={this.toggle}>Decline Payment</MDBModalHeader>
+                            <MDBModalBody>
+                                <MDBBtn color="secondary" onClick={this.cancelPayment}>salah tf</MDBBtn>
+                                <MDBBtn color="primary" onClick={this.wrongPicture}>gambar ga jelas</MDBBtn>
+                            </MDBModalBody>
+
+                        </MDBModal>
+                    </MDBContainer>
+                    : null
 
                 }
             </div>

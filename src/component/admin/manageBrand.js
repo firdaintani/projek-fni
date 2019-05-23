@@ -2,11 +2,11 @@ import React from 'react';
 import { MDBDataTable } from 'mdbreact';
 import Axios from 'axios';
 import {urlApi} from '../../support/urlApi'
-// import ModalManageCat from './modalManageCat'
+
 import swal from 'sweetalert'
 import { MDBBtn, MDBModal, MDBModalBody,MDBModalHeader, MDBModalFooter } from 'mdbreact';
 import { connect } from 'react-redux'
-import PageNotFound from '../pageNotFound'
+import PageNotFound from '../PageNotFound'
 
 class ManageBrand extends React.Component{
   
@@ -93,7 +93,6 @@ class ManageBrand extends React.Component{
         else{
 
           swal("Success!","Brand has been updated", "success");
-          // this.getBrand()
           this.mapData(res.data)
           this.cancelBtn()
 
@@ -134,7 +133,6 @@ class ManageBrand extends React.Component{
               icon: "warning",
             })  
           }else{
-            // this.getBrand()
             this.mapData(res.data)
             swal("Data has been deleted!", {
               icon: "success",
@@ -157,7 +155,6 @@ class ManageBrand extends React.Component{
         icon: "warning",
       })
     }else{
-      // alert(category)
       Axios.post(urlApi+'/brand/add', {brand_name})
       .then((res)=>{
         if(res.data.error){
